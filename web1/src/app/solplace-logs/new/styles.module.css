@@ -1,0 +1,51 @@
+.title_wrapper {
+    display: flex;
+    gap: 0.5rem;
+    padding-block: 12px;
+    margin-bottom: 24px;
+}
+
+.title_new {
+    font-size: 1.125rem;
+    font-weight: 700;
+}
+
+.icon_left,
+.icon_right {
+    width: 1.5rem;
+    height: 1.5rem;
+    position: relative;
+}
+
+.form_wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form_title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #333333;
+    margin-bottom: 8px;
+}
+
+.form_title span {
+    color: #F66A6A;
+}
+
+.form_textarea {
+    width: 100%;
+    height: 148px;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    border: 1px solid #D4D3D3;
+}
+
+.address_button {
+    height: 44px;
+    border-radius: 8px;
+    border: 1px solid #000000;
+    padding-inline: 12px;
+
+}

@@ -1,0 +1,14 @@
+.input_normal {
+    width: 100%;
+    height: 2.75rem;
+    border: 1px solid #D4D3D3;
+    border-radius: 8px;
+    padding-inline: 1rem;
+}
+
+::placeholder {
+    color: #ABABAB;
+    font-size: 0.875rem;
+    font-weight: 500;
+    /* padding: 0.75rem 1rem; */
+}
