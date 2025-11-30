@@ -28,3 +28,8 @@ body {
 .layout-padding {
     padding-inline: 1.25rem;
 }
+
+html {
+    /*  360 : 16 = 100vw : x */
+    font-size: calc((40 / 9) * 1vw);
+}

@@ -1,0 +1,25 @@
+.logo_img {
+    width: 3.25rem;
+    height: 2rem;
+    position: relative;
+}
+
+.backBtn_img {
+    width: 1.5rem;
+    height: 1.5rem;
+    position: relative;
+}
+
+.header {
+    width: 100vw;
+    height: 3rem;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    position: fixed;
+    z-index: 100;
+}
+
+.header_layer {
+    height: 3rem;
+}

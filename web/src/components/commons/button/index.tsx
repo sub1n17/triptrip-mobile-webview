@@ -1,9 +1,15 @@
-function ButtonBase({ text, onClick }) {
-    return <button onClick={onClick}>{text} </button>;
+import style from './styles.module.css';
+
+function ButtonBase({ text, onClick, className }) {
+    return (
+        <button onClick={onClick} className={className}>
+            {text}
+        </button>
+    );
 }
 
 export function ButtonFull(props) {
-    return <ButtonBase {...props}></ButtonBase>;
+    return <ButtonBase {...props} className={style.button_normal}></ButtonBase>;
 }
 
 export function ButtonSmall(props) {
