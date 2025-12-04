@@ -10,7 +10,11 @@ export default function Layout({ children }: ILayoutProps) {
         <>
             <div className={style.layout_wrapper}>
                 <HeaderGlobal></HeaderGlobal>
-                <>{children} </>
+                <div
+                // style={{ display: 'flex', flexDirection: 'column', flex: 1 }}
+                >
+                    {children}{' '}
+                </div>
             </div>
         </>
     );

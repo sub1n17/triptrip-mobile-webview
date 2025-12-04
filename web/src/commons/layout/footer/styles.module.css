@@ -1,7 +1,17 @@
+/* .footer_wrapper {
+    display: flex;
+    flex-direction: column;
+} */
+
 .footer_layer {
     flex: 1;
 }
 
-.form_btn {
-    padding-bottom: 2.5rem;
+.isPlace_footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    background-color: #FFFFFF;
+    width: 100%;
 }

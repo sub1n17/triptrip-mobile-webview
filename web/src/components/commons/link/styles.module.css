@@ -1,0 +1,22 @@
+.address_txt {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+
+
+.icon_right {
+    width: 1.5rem;
+    height: 1.5rem;
+    position: relative;
+}
+
+.address_button {
+    height: 44px;
+    border-radius: 8px;
+    border: 1px solid #000000;
+    padding-inline: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

@@ -1,31 +1,25 @@
 'use client';
 
-import style from './styles.module.css';
+import style from '../solplace-new/styles.module.css';
 import { InputNormal } from '@/src/components/commons/input';
 
 import Form from '../../commons/form';
-import { newSchema, newSchemaType } from './schema';
-import { useInitializeNew } from './form.initialize';
+import { ButtonFull } from '../../commons/button';
 import Textarea from '../../commons/textarea';
 import Footer from '@/src/commons/layout/footer/footer';
 import ImageUpload from '../../commons/image-upload';
 import { AddressLink } from '../../commons/link';
+import { editSchema } from './schema';
+import { useInitializeEdit } from './form.initialize';
 
-import { useSearchParams } from 'next/navigation';
-
-export default function SolPlaceNew() {
-    const { onClickSubmit } = useInitializeNew();
-
-    const searchParams = useSearchParams();
-    const lat = searchParams.get('lat') || '37.5662952';
-    const lng = searchParams.get('lng') || '126.9779451';
-    const address = searchParams.get('address') || '플레이스 주소 입력';
+export default function SolPlaceDetailEdit() {
+    const { onClickSubmit } = useInitializeEdit();
 
     return (
         <>
             <main className={style.container}>
-                <Form<newSchemaType>
-                    schema={newSchema}
+                <Form
+                    schema={editSchema}
                     onClickSubmit={onClickSubmit}
                     className={style.form_wrapper}
                 >
@@ -42,12 +36,7 @@ export default function SolPlaceNew() {
                     </div>
                     <div>
                         <div className={style.form_title}>플레이스 주소</div>
-                        <AddressLink
-                            href={`/solplace-logs/new/map?lat=${lat}&lng=${lng}&address=${encodeURIComponent(
-                                address
-                            )}`}
-                            linkText={address || '플레이스 주소 입력'}
-                        ></AddressLink>
+                        <AddressLink href={''} linkText={'플레이스 주소 입력'}></AddressLink>
                     </div>
                     <div>
                         <div className={style.form_title}>
@@ -60,7 +49,7 @@ export default function SolPlaceNew() {
                             className={style.form_textarea}
                         ></Textarea>
                     </div>
-                    <Footer text={'로그 등록'}></Footer>
+                    <Footer text={'수정'}></Footer>
                 </Form>
             </main>
         </>

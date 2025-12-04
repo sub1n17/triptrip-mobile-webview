@@ -10,17 +10,12 @@
     font-weight: 700;
 }
 
-.icon_left,
-.icon_right {
-    width: 1.5rem;
-    height: 1.5rem;
-    position: relative;
-}
-
 .form_wrapper {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    min-height: 100vh;
+    padding-bottom: 2.5rem;
 }
 
 .form_title {
@@ -40,19 +35,4 @@
     border-radius: 8px;
     padding: 0.75rem 1rem;
     border: 1px solid #D4D3D3;
-}
-
-.address_button {
-    height: 44px;
-    border-radius: 8px;
-    border: 1px solid #000000;
-    padding-inline: 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.address_txt {
-    font-size: 14px;
-    font-weight: 700;
 }

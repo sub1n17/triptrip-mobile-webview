@@ -1,6 +1,12 @@
 import style from './styles.module.css';
 
-function ButtonBase({ text, onClick, className }) {
+interface IButtonBaseProps {
+    text?: string;
+    onClick?: any;
+    className?: string;
+}
+
+function ButtonBase({ text, onClick, className }: IButtonBaseProps) {
     return (
         <button onClick={onClick} className={className}>
             {text}

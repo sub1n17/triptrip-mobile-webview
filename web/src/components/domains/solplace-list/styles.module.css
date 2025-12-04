@@ -1,0 +1,57 @@
+.place_list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9.375rem, 1fr));
+    gap: 1.25rem 1rem;
+    padding-bottom: 3.5rem;
+    /* ㄴ> 네비게이션 높이값만큼 패딩값 주기 */
+}
+
+.list_wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.place_img {
+    width: 9.375rem;
+    height: 12.5rem;
+    position: relative;
+}
+
+.title {
+    text-align: left;
+    font-weight: 700;
+    color: #1C1C1C;
+    white-space: nowrap;
+    /* ㄴ> 한 줄로 만들기 */
+    overflow: hidden;
+    /* ㄴ> 튀어나오는 부분 숨기기 */
+    text-overflow: ellipsis;
+    /* ㄴ> 말줄임으로 대체 */
+}
+
+.contents {
+    text-align: left;
+    font-size: 0.875rem;
+    color: #5F5F5F;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.location_wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.location_img {
+    position: relative;
+    width: 1rem;
+    height: 1rem;
+}
+
+.address {
+    font-size: 0.813rem;
+    font-weight: 600;
+    color: #777777;
+}

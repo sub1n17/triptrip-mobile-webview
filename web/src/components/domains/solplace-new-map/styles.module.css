@@ -1,0 +1,22 @@
+.mapWrapper {
+    margin-inline: -1.25rem;
+}
+
+.flexWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding-block: 1.25rem;
+}
+
+#postLayer {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    background-color: #ffffff;
+
+}

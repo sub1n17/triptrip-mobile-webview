@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import Layout from '../commons/layout';
+import { DeviceSetting } from '../commons/settings/device-setting';
+import Script from 'next/script';
 
 const geistSans = Geist({
     variable: '--font-geist-sans',
@@ -28,7 +30,14 @@ export default function RootLayout({
             <body
                 className={`${geistSans.variable} ${geistMono.variable} antialiased layout-padding`}
             >
-                <Layout>{children}</Layout>
+                <Script
+                    src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_MAP_KEY}&autoload=false&libraries=services`}
+                    strategy="beforeInteractive"
+                />
+                {/* 모든 페이지에서 API 사용 가능하기 */}
+                <DeviceSetting>
+                    <Layout>{children}</Layout>
+                </DeviceSetting>
             </body>
         </html>
     );
