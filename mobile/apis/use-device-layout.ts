@@ -13,7 +13,7 @@ type DeviceLayout = {
 export const useDeviceLayout = (onResponse) => {
     const [layout, setLayout] = useState<DeviceLayout>({
         notchBackgroundColor: 'white',
-        statusBarStyle: 'light',
+        statusBarStyle: 'dark',
         safeAreaViewEdge: [],
     });
 
@@ -35,7 +35,7 @@ export const useDeviceLayout = (onResponse) => {
     const setDefaultLayout = () => {
         setLayout({
             notchBackgroundColor: 'white',
-            statusBarStyle: 'light',
+            statusBarStyle: 'dark',
             safeAreaViewEdge: ['top', 'bottom'],
         });
         onResponse({

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useRoutingSetting } from '@/src/commons/settings/routing-setting/hook';
 import { useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { ButtonCircle } from '../../commons/button';
 
 const mockData = [
     {
@@ -269,7 +270,7 @@ export default function SolPlaceList({ isPlace }) {
 
     return (
         <>
-            <main style={{ minHeight: '100vh' }}>
+            <main className={style.place_wrapper}>
                 <InfiniteScroll
                     hasMore={list.length < mockData.length}
                     next={onNext}
@@ -308,6 +309,16 @@ export default function SolPlaceList({ isPlace }) {
                         ))}
                     </div>
                 </InfiniteScroll>
+                <Link href={'/solplace-logs/new'} className={style.add_place}>
+                    <ButtonCircle>
+                        <Image
+                            src={imgSrc.placeAdd}
+                            alt="플레이스 등록"
+                            width={36}
+                            height={36}
+                        ></Image>
+                    </ButtonCircle>
+                </Link>
             </main>
             <Footer isPlace={isPlace}></Footer>
         </>

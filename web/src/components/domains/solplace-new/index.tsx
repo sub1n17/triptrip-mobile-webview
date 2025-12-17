@@ -10,17 +10,19 @@ import Textarea from '../../commons/textarea';
 import Footer from '@/src/commons/layout/footer/footer';
 import ImageUpload from '../../commons/image-upload';
 import { AddressLink } from '../../commons/link';
-
 import { useSearchParams } from 'next/navigation';
+import { useState } from 'react';
 
 export default function SolPlaceNew() {
-    const { onClickSubmit } = useInitializeNew();
-
     const searchParams = useSearchParams();
     const lat = searchParams.get('lat') || '37.5662952';
     const lng = searchParams.get('lng') || '126.9779451';
     const address = searchParams.get('address') || '플레이스 주소 입력';
-    // const address = searchParams.get('address') || '서울특별시 중구 세종대로 110';
+
+    // 서버 업로드용 이미지
+    const [file, setFile] = useState<File[]>([]);
+
+    const { onClickSubmit } = useInitializeNew({ file });
 
     return (
         <>
@@ -30,7 +32,7 @@ export default function SolPlaceNew() {
                     onClickSubmit={onClickSubmit}
                     className={style.form_wrapper}
                 >
-                    <ImageUpload></ImageUpload>
+                    <ImageUpload setFile={setFile}></ImageUpload>
 
                     <div>
                         <div className={style.form_title}>
@@ -61,7 +63,6 @@ export default function SolPlaceNew() {
                             className={style.form_textarea}
                         ></Textarea>
                     </div>
-
                     <Footer text={'로그 등록'}></Footer>
                 </Form>
             </main>

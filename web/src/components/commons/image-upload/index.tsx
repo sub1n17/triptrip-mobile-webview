@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangeEvent, useRef, useState } from 'react';
+import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from 'react';
 import Image from 'next/image';
 import style from './styles.module.css';
 
@@ -8,9 +8,15 @@ const imgSrc = {
     add_img: '/images/add_img.png',
 };
 
-export default function ImageUpload() {
-    // 미리보기 이미지 url
+interface ImageUploadProps {
+    setFile: Dispatch<SetStateAction<File[]>>;
+}
+
+export default function ImageUpload({ setFile }: ImageUploadProps) {
+    // 미리보기용 이미지
     const [imgUrl, setImgUrl] = useState<string[]>([]);
+
+    // 이미지 추가하기
     const onChangeFile = (event: ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (!file) return;
@@ -26,6 +32,7 @@ export default function ImageUpload() {
             const result = event.target?.result;
             if (typeof result === 'string') {
                 setImgUrl((prev) => [...prev, result]);
+                setFile((prev) => [...prev, file]);
             }
         };
     };

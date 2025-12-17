@@ -27,11 +27,6 @@ const HeaderBase = ({ title, hasLogo, hasBack, isTransParent }: IHeaderBaseProps
                 }}
             >
                 {hasLogo && (
-                    // <Image src={imgSrc.logo} alt="logo" width={52} height={32}></Image>
-
-                    // <div className={style.logo_img}>
-                    //     <Image src={imgSrc.logo} alt="logo" fill></Image>
-                    // </div>
                     <div className={style.logo_img}>
                         <Image src={imgSrc.logo} alt="logo" width={52} height={32}></Image>
                     </div>
@@ -43,7 +38,7 @@ const HeaderBase = ({ title, hasLogo, hasBack, isTransParent }: IHeaderBaseProps
                     </div>
                 )}
 
-                {title && <div>{title} </div>}
+                {title && <div className={style.header_title}>{title}</div>}
             </header>
             {/* 헤더 레이어 */}
             {isTransParent ? <></> : <div className={style.header_layer}></div>}

@@ -6,10 +6,13 @@ import { useInitializeLogIn } from './form.initialize';
 import { loginSchema, LogInSchemaType } from './schema';
 import style from './styles.module.css';
 import Form from '../../commons/form';
-// import Splash from '../splash';
+import Splash from '../splash';
 
 export default function LogIn() {
-    const { onClickSubmit } = useInitializeLogIn();
+    const {
+        onClickSubmit,
+        // tokenChecking
+    } = useInitializeLogIn();
 
     // 리프레시 토큰 있으면 스플래시화면 보여주기
     // if (tokenChecking) return <Splash></Splash>;

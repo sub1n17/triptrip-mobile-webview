@@ -1,17 +1,19 @@
 'use client';
 
+import Image from 'next/image';
 import style from './styles.module.css';
 
 interface IButtonBaseProps {
     text?: string;
-    onClick?: any;
+    onClick?: () => void;
     className?: string;
+    children?: React.ReactNode;
 }
 
-function ButtonBase({ text, onClick, className }: IButtonBaseProps) {
+function ButtonBase({ text, onClick, className, children }: IButtonBaseProps) {
     return (
         <button onClick={onClick} className={className}>
-            {text}
+            {children ?? text}
         </button>
     );
 }
@@ -25,5 +27,5 @@ export function ButtonSmall(props) {
 }
 
 export function ButtonCircle(props) {
-    return <ButtonBase {...props}></ButtonBase>;
+    return <ButtonBase {...props} className={style.button_circle}></ButtonBase>;
 }

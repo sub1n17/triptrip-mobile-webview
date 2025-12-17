@@ -29,7 +29,7 @@ export default function Footer({ text, isPlace, isLogin }: IFooterProps) {
             {isLogin && !isPlace && (
                 <div>
                     <ButtonFull text={text}></ButtonFull>
-                    <Link href="/onBoarding/signup" className={style.signup_link}>
+                    <Link href="/signup" className={style.signup_link}>
                         회원가입
                     </Link>
                 </div>

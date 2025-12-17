@@ -22,4 +22,12 @@
 
 .header_layer {
     height: 3rem;
+    /* margin-bottom: 1.5rem; */
+    margin-bottom: 1rem;
+}
+
+.header_title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #000000;
 }

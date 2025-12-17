@@ -2,33 +2,74 @@
 
 import { useDeviceSetting } from '@/src/commons/settings/device-setting/hook';
 import { newSchemaType } from './schema';
-import { useMutation } from '@apollo/client';
-import { CREATE_SOLPLACE_LOG } from '@/src/commons/apis/graphql/mutations/create-solplace-log';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { gql, useMutation } from '@apollo/client';
 
-export const useInitializeNew = () => {
+const UPLOAD_FILE = gql`
+    mutation uploadFile($file: File) {
+        uploadFile(file: "") {
+            url
+        }
+    }
+`;
+
+const CREATE_PLACE = gql`
+    mutation createSolplaceLog($createSolplaceLogInput: CreateSolplaceLogInput!) {
+        createSolplaceLog(createSolplaceLogInput: $createSolplaceLogInput) {
+            id
+            title
+            contents
+            address
+            lat
+            lng
+            addressCity
+            addressTown
+            images
+        }
+    }
+`;
+
+interface useInitializeNewProps {
+    file: File[];
+}
+
+export const useInitializeNew = ({ file }: useInitializeNewProps) => {
     const { fetchApp } = useDeviceSetting();
     const searchParams = useSearchParams();
     const lat = searchParams.get('lat');
     const lng = searchParams.get('lng');
     const address = searchParams.get('address');
 
-    const [createSolplaceLog] = useMutation(CREATE_SOLPLACE_LOG);
+    const [createLog] = useMutation(CREATE_PLACE);
+    const [uploadFile] = useMutation(UPLOAD_FILE);
     const router = useRouter();
+
+    // 로그인 등록
     const onClickSubmit = async (data: newSchemaType) => {
-        const result = await createSolplaceLog({
+        // 사진 업로드 후 url 받아오기
+        const imagesUrl = await Promise.all(
+            file.map((el) => {
+                uploadFile({ variables: { file: el } });
+            })
+        );
+
+        const result = await createLog({
             variables: {
                 createSolplaceLogInput: {
                     title: data.title,
                     contents: data.contents,
+                    address: address,
                     lat: lat,
                     lng: lng,
-                    address: address,
+                    images: imagesUrl,
                 },
             },
         });
 
+        // 등록 완료 시, 알람 권한 요청
         await fetchApp({ query: 'requestDeviceNotificationsForPermissionSolplaceLogNewSet' });
+
+        // 등록 완료 시, 알람 요청
         await fetchApp({
             query: 'createDeviceNotificationsForSolplaceLogNewSet',
             variables: { solplaceLogId: result.data.createSolplaceLog.id },

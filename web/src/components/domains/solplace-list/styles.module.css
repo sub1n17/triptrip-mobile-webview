@@ -55,3 +55,16 @@
     font-weight: 600;
     color: #777777;
 }
+
+.add_place {
+    position: fixed;
+    bottom: calc(1.5rem + 3.5rem);
+    /* ㄴ> 바텀내비 때문에 padding-bottom 속성 줬으니까 그만큼 더하기 */
+    right: 1.25rem;
+    /* ㄴ> 레이아웃 전체 padding-inline 1.25rem */
+}
+
+.place_wrapper {
+    position: relative;
+    min-height: 100vh;
+}

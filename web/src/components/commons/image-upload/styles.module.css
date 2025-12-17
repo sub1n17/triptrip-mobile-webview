@@ -1,15 +1,21 @@
+.add_img {
+    width: 6.25rem;
+    height: 6.25rem;
+}
+
 .upload_img {
-    border-radius: 8px;
+    /* border-radius: 8px; */
+    border-radius: 0.5rem;
     overflow: hidden;
-    width: 100px;
-    height: 100px;
+    width: 6.25rem;
+    height: 6.25rem;
     flex-shrink: 0;
     /* ㄴ> 이미지 추가 시 줄어들지 않게 하기*/
 }
 
 .img_wrapper {
     display: flex;
-    gap: 12px;
+    gap: 0.75rem;
     flex-wrap: nowrap;
     overflow-x: auto;
     margin-right: calc(-1.25rem);
