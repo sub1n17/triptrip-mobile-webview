@@ -9,6 +9,7 @@ import { useParams } from 'next/navigation';
 import { webviewLog } from '@/src/commons/libraries/webview-log';
 import { Map } from 'react-kakao-maps-sdk';
 import { MapDetail } from '../../commons/map';
+import Link from 'next/link';
 
 const imgSrc = {
     placeImage: '/images/defaultPlaceImg.jpg',
@@ -37,7 +38,6 @@ const FETCH_PLACE = gql`
 
 export default function SolPlaceDetail() {
     // 조회하기
-    useEffect(() => {}, []);
 
     const params = useParams();
     const { data } = useQuery(FETCH_PLACE, {
@@ -45,8 +45,8 @@ export default function SolPlaceDetail() {
             id: params.solplaceLogId,
         },
     });
-    const placeLat = data?.fetchSolplaceLog.lat;
-    const placeLng = data?.fetchSolplaceLog.lng;
+    const placeLat = data?.fetchSolplaceLog.lat === 0 ? null : data?.fetchSolplaceLog.lat;
+    const placeLng = data?.fetchSolplaceLog.lng === 0 ? null : data?.fetchSolplaceLog.lng;
 
     const { fetchApp } = useDeviceSetting();
 
@@ -111,22 +111,28 @@ export default function SolPlaceDetail() {
                 <div>
                     {/* 이미지 */}
                     <div className={style.image_wrapper}>
-                        {data?.fetchSolplaceLog.images[0] ? (
-                            data?.fetchSolplaceLog.images.map((el) => (
-                                <div onClick={onclickFullScreen} key={`${el}`}>
-                                    <Image src={el} alt="placeImage" fill></Image>
-                                </div>
-                            ))
-                        ) : (
-                            // 이미지 없을 경우 기본 이미지 보여주기
-                            <div onClick={onclickFullScreen}>
+                        {/* 이미지 없으면 기본 이미지 */}
+                        {data?.fetchSolplaceLog.images.length === 0 ? (
+                            <div>
                                 <Image
                                     src={imgSrc.placeImage}
                                     alt="placeImage"
                                     fill
                                     style={{ objectFit: 'cover' }}
-                                ></Image>
+                                />
                             </div>
+                        ) : (
+                            // 이미지 있을 떄
+                            data?.fetchSolplaceLog.images.map((el) => (
+                                <div onClick={onclickFullScreen} key={el}>
+                                    <Image
+                                        src={`https://storage.googleapis.com/${el}`}
+                                        alt="placeImage"
+                                        fill
+                                        style={{ objectFit: 'cover' }}
+                                    />
+                                </div>
+                            ))
                         )}
                     </div>
                     <div className={style.contents_wrapper}>
@@ -136,48 +142,56 @@ export default function SolPlaceDetail() {
                                 <div className={style.address_title}>
                                     {data?.fetchSolplaceLog.title}
                                 </div>
-                                <button className={style.edit_img}>
+                                <Link
+                                    href={`/solplace-logs/${data?.fetchSolplaceLog.id}/edit`}
+                                    className={style.edit_img}
+                                >
                                     <Image src={imgSrc.edit} alt="수정하기" fill></Image>
-                                </button>
+                                </Link>
                             </div>
                             {/* 주소 */}
-                            <div>
-                                <div className={style.addressDetail_wrapper}>
-                                    <div className={style.location_img}>
-                                        <Image src={imgSrc.location} alt="주소" fill></Image>
+                            {placeLat && placeLng && (
+                                <div>
+                                    <div className={style.addressDetail_wrapper}>
+                                        <div className={style.location_img}>
+                                            <Image src={imgSrc.location} alt="주소" fill></Image>
+                                        </div>
+                                        <div className={style.addressDetail}>
+                                            {data?.fetchSolplaceLog.address}
+                                        </div>
+                                        <div>
+                                            {/* 지도 보기 */}
+                                            <button
+                                                className={style.map_toggle}
+                                                onClick={onClickMapToggle}
+                                            >
+                                                <div className={style.map_txt}>
+                                                    {mapToggle ? '지도 접기' : '지도 보기'}
+                                                </div>
+                                                <div className={style.mapArr_img}>
+                                                    <Image
+                                                        src={
+                                                            mapToggle
+                                                                ? imgSrc.mapUp
+                                                                : imgSrc.mapDown
+                                                        }
+                                                        alt={mapToggle ? '지도 접기' : '지도 보기'}
+                                                        fill
+                                                    ></Image>
+                                                </div>
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div className={style.addressDetail}>
-                                        {data?.fetchSolplaceLog.address}
-                                    </div>
-                                    <div>
-                                        {/* 지도 보기 */}
-                                        <button
-                                            className={style.map_toggle}
-                                            onClick={onClickMapToggle}
-                                        >
-                                            <div className={style.map_txt}>
-                                                {mapToggle ? '지도 접기' : '지도 보기'}
-                                            </div>
-                                            <div className={style.mapArr_img}>
-                                                <Image
-                                                    src={mapToggle ? imgSrc.mapUp : imgSrc.mapDown}
-                                                    alt={mapToggle ? '지도 접기' : '지도 보기'}
-                                                    fill
-                                                ></Image>
-                                            </div>
-                                        </button>
-                                    </div>
+                                    {mapToggle && (
+                                        <div className={style.map_wrapper}>
+                                            <MapDetail
+                                                placeLat={placeLat}
+                                                placeLng={placeLng}
+                                            ></MapDetail>
+                                        </div>
+                                    )}
                                 </div>
-                                {mapToggle && (
-                                    <div className={style.map_wrapper}>
-                                        <MapDetail
-                                            placeLat={placeLat}
-                                            placeLng={placeLng}
-                                        ></MapDetail>
-                                        {/* <Image src={imgSrc.mapExample} alt="지도" fill></Image> */}
-                                    </div>
-                                )}
-                            </div>
+                            )}
                         </div>
                         {/* 내용 */}
                         <div className={style.contents}>{data?.fetchSolplaceLog.contents}</div>

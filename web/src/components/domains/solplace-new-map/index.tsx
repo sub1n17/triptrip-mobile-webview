@@ -28,6 +28,12 @@ export default function SolPlaceNewMap() {
         lng: Number(lng),
     };
 
+    // 상세페이지 수정
+    const from = searchParams.get('from');
+    const id = searchParams.get('id');
+    // console.log(searchParams.get('from'));
+
+    console.log('render from:', searchParams.get('from'));
     // 주소 검색 버튼 클릭 시 Daum 주소 검색 실행 + 샬로우라이팅
     const handleSearchAddress = () => {
         const layer = document.getElementById('postLayer');
@@ -35,12 +41,25 @@ export default function SolPlaceNewMap() {
 
         new window.daum.Postcode({
             oncomplete: function (data) {
-                router.replace(
-                    `?lat=${location.lat}&lng=${location.lng}&address=${encodeURIComponent(
-                        data.address
-                    )}`,
-                    { shallow: true }
-                );
+                console.log('before replace from:', searchParams.get('from'));
+
+                const params = new URLSearchParams(searchParams.toString());
+
+                // 🔥 반드시 다시 넣어야 함
+                if (from) params.set('from', from);
+                if (id) params.set('id', id);
+
+                params.set('address', data.address);
+
+                router.replace(`/solplace-logs/new/map?${params.toString()}`, { shallow: true });
+
+                console.log('after replace from:', params.get('from'));
+                // router.replace(
+                //     `?from=${from}&id=${id}&lat=${location.lat}&lng=${
+                //         location.lng
+                //     }&address=${encodeURIComponent(data.address)}`,
+                //     { shallow: true }
+                // );
                 layer.style.display = 'none';
             },
             onclose: function () {
@@ -76,9 +95,15 @@ export default function SolPlaceNewMap() {
                 </div>
 
                 <Link
-                    href={`/solplace-logs/new?lat=${location.lat}&lng=${
-                        location.lng
-                    }&address=${encodeURIComponent(address)}`}
+                    href={
+                        from === 'edit'
+                            ? `/solplace-logs/${id}/edit?from=edit&id=${id}&lat=${
+                                  location.lat
+                              }&lng=${location.lng}&address=${encodeURIComponent(address)}`
+                            : `/solplace-logs/new?lat=${location.lat}&lng=${
+                                  location.lng
+                              }&address=${encodeURIComponent(address)}`
+                    }
                     shallow
                 >
                     <ButtonFull text={'이 위치로 등록'} />

@@ -8,8 +8,8 @@ import { useSolPlaceNewStore } from '@/src/commons/stores/solplaceNew-store';
 import { message } from 'antd';
 
 const UPLOAD_FILE = gql`
-    mutation uploadFile($file: File) {
-        uploadFile(file: "") {
+    mutation uploadFile($file: Upload) {
+        uploadFile(file: $file) {
             url
         }
     }
@@ -49,11 +49,14 @@ export const useInitializeNew = () => {
     const onClickSubmit = async (data: newSchemaType) => {
         try {
             // 사진 업로드 후 url 받아오기
-            const imagesUrl = await Promise.all(
-                files.map((el) => {
-                    uploadFile({ variables: { file: el } });
+            const imagesUrls = await Promise.all(
+                files.map(async (el) => {
+                    const result = await uploadFile({ variables: { file: el } });
+                    return result.data.uploadFile.url;
                 })
             );
+
+            // const imagesUrls = imagesFiles.map((el) => el.data.uploadFile.url);
 
             const result = await createLog({
                 variables: {
@@ -63,7 +66,7 @@ export const useInitializeNew = () => {
                         address: address,
                         lat: Number(lat),
                         lng: Number(lng),
-                        images: imagesUrl,
+                        images: imagesUrls.filter(Boolean),
                     },
                 },
             });

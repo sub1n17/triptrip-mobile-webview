@@ -21,15 +21,12 @@ function MapBase({ address, location, placeLat, placeLng }) {
     const initLocation =
         // 게시글 상세일 때, 조회된 위도경도 값 사용
         placeLat && placeLng
-            ? {
-                  lat: Number(placeLat),
-                  lng: Number(placeLng),
-              }
-            : // 작성/수정할 때, 샬로우라우팅 된 url의 위도경도 값 사용
-              {
-                  lat: lat ? Number(lat) : location.lat,
-                  lng: lng ? Number(lng) : location.lng,
-              };
+            ? { lat: Number(placeLat), lng: Number(placeLng) }
+            : lat && lng
+            ? // 작성/수정할 때, 샬로우라우팅 된 url의 위도경도 값 사용
+              { lat: Number(lat), lng: Number(lng) }
+            : // 작성 시 주소 입력 안 했을 때
+              null;
 
     // 주소 → 좌표 변환 (지도 이동 없이 URL만 갱신)
     useEffect(() => {
@@ -95,17 +92,19 @@ function MapBase({ address, location, placeLat, placeLng }) {
             </Map>
         </div>
     ) : (
-        <div className={style.mapWrapper}>
-            <Map
-                ref={mapRef}
-                center={initLocation}
-                level={3}
-                onIdle={onIdle}
-                className={style.mapElement}
-            >
-                <div className={style.centerMarker} />
-            </Map>
-        </div>
+        lat && lng && (
+            <div className={style.mapWrapper}>
+                <Map
+                    ref={mapRef}
+                    center={initLocation}
+                    level={3}
+                    onIdle={onIdle}
+                    className={style.mapElement}
+                >
+                    <div className={style.centerMarker} />
+                </Map>
+            </div>
+        )
     );
 }
 

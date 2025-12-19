@@ -6,12 +6,12 @@
 }
 
 .contents_wrapper {
-    padding-block: 24px 40px;
+    padding-block: 1.5rem 2.5rem;
 }
 
 .edit_img {
-    width: 24px;
-    height: 24px;
+    width: 1.5rem;
+    height: 1.5rem;
     position: relative;
 }
 
@@ -22,8 +22,8 @@
 }
 
 .mapArr_img {
-    width: 24px;
-    height: 24px;
+    width: 1.5rem;
+    height: 1.5rem;
     position: relative;
 }
 
@@ -44,7 +44,6 @@
 .title_wrapper {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 12px;
 }
 
 .address_title {
@@ -56,8 +55,9 @@
 .addressDetail_wrapper {
     display: flex;
     align-items: center;
-    font-size: 13px;
+    font-size: 0.813rem;
     font-weight: 600;
+    margin-top: 0.75rem;
 }
 
 .addressDetail {
@@ -71,11 +71,11 @@
 .map_toggle {
     display: flex;
     align-items: center;
-    margin-left: 8px;
+    margin-left: 0.5em;
 }
 
 .contents {
-    font-size: 14px;
+    font-size: 0.875rem;
     color: #333333;
     line-height: 20px;
 }

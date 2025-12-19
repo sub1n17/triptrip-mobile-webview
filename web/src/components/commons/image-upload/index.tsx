@@ -10,9 +10,6 @@ const imgSrc = {
 };
 
 export default function ImageUpload() {
-    // 미리보기용 이미지
-    // const [imgUrl, setImgUrl] = useState<string[]>([]);
-
     // zustand
     const { previewUrls, setPreviewUrls, setFiles } = useSolPlaceNewStore();
 
@@ -33,8 +30,6 @@ export default function ImageUpload() {
             if (typeof result === 'string') {
                 setPreviewUrls(result);
                 setFiles(file);
-                // setImgUrl((prev) => [...prev, result]);
-                // setFile((prev) => [...prev, file]);
             }
         };
     };

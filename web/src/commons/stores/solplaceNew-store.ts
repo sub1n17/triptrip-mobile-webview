@@ -26,4 +26,7 @@ export const useSolPlaceNewStore = create<solPlaceNewStore>((set) => ({
     // 서버 업로드용
     files: [],
     setFiles: (files) => set((state) => ({ files: [...state.files, files] })),
+
+    // 초기화하기
+    reset: () => set({ title: '', contents: '', files: [], previewUrls: [] }),
 }));

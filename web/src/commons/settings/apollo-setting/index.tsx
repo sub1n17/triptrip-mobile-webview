@@ -1,11 +1,18 @@
 'use client';
 
-import { ApolloClient, ApolloProvider, fromPromise, HttpLink, InMemoryCache } from '@apollo/client';
+import {
+    ApolloClient,
+    ApolloLink,
+    ApolloProvider,
+    fromPromise,
+    // HttpLink,
+    InMemoryCache,
+} from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
 import { getAccessToken } from '../../libraries/get-access-token';
 import { useAccessTokenStore } from '../../stores/token-store';
-// import { createUploadLink } from 'apollo-upload-client';
 import { setContext } from '@apollo/client/link/context';
+import { createUploadLink } from 'apollo-upload-client';
 
 interface IApolloSetting {
     children: React.ReactNode;
@@ -42,11 +49,11 @@ export default function ApolloSetting(props: IApolloSetting) {
         }
     });
 
-    const httpLink = new HttpLink({
-        uri: 'https://main-hybrid.codebootcamp.co.kr/graphql',
-        // credentials: 'include',
-        credentials: 'omit',
-    });
+    // const httpLink = new HttpLink({
+    //     uri: 'https://main-hybrid.codebootcamp.co.kr/graphql',
+    //     // credentials: 'include',
+    //     credentials: 'omit',
+    // });
 
     const authLink = setContext((_, { headers }) => {
         const { accessToken } = useAccessTokenStore.getState();
@@ -54,14 +61,25 @@ export default function ApolloSetting(props: IApolloSetting) {
             headers: {
                 ...headers,
                 Authorization: accessToken ? `Bearer ${accessToken}` : '',
+                'Apollo-Require-Preflight': 'true',
             },
         };
     });
 
+    const uploadLink = createUploadLink({
+        uri: 'https://main-hybrid.codebootcamp.co.kr/graphql',
+        credentials: 'omit',
+    });
+
     const client = new ApolloClient({
-        link: errorLink.concat(authLink).concat(httpLink),
+        link: ApolloLink.from([errorLink, authLink, uploadLink]),
         cache: new InMemoryCache(),
     });
+
+    // const client = new ApolloClient({
+    //     link: errorLink.concat(authLink).concat(httpLink),
+    //     cache: new InMemoryCache(),
+    // });
 
     return <ApolloProvider client={client}> {props.children} </ApolloProvider>;
 }

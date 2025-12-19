@@ -7,8 +7,8 @@
     /* border-radius: 8px; */
     border-radius: 0.5rem;
     overflow: hidden;
-    width: 6.25rem;
-    height: 6.25rem;
+    /* width: 6.25rem;
+    height: 6.25rem; */
     flex-shrink: 0;
     /* ㄴ> 이미지 추가 시 줄어들지 않게 하기*/
 }

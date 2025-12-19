@@ -11,7 +11,6 @@ import Footer from '@/src/commons/layout/footer/footer';
 import ImageUpload from '../../commons/image-upload';
 import { AddressLink } from '../../commons/link';
 import { useSearchParams } from 'next/navigation';
-import { useState } from 'react';
 import { useSolPlaceNewStore } from '@/src/commons/stores/solplaceNew-store';
 
 export default function SolPlaceNew() {
@@ -19,9 +18,6 @@ export default function SolPlaceNew() {
     const lat = searchParams.get('lat') || '37.5662952';
     const lng = searchParams.get('lng') || '126.9779451';
     const address = searchParams.get('address') || '플레이스 주소 입력';
-
-    // 서버 업로드용 이미지
-    // const [file, setFile] = useState<File[]>([]);
 
     const { onClickSubmit } = useInitializeNew();
 

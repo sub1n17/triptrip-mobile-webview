@@ -6,13 +6,13 @@ const imgSrc = {
     arr_right: '/icons/right_icon.png',
 };
 
-function LinkBase({ linkText, href }) {
+function LinkBase({ linkText, href, placeAddress }) {
     return (
         <>
             <Link href={href} className={style.address_button}>
-                <div className={style.address_txt}>{linkText}</div>
+                <div className={style.address_txt}>{placeAddress ? placeAddress : linkText}</div>
                 <div className={style.icon_right}>
-                    <Image src={imgSrc.arr_right} alt=" arr_right" fill></Image>
+                    <Image src={imgSrc.arr_right} alt="arr_right" fill></Image>
                 </div>
             </Link>
         </>

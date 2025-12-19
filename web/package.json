@@ -12,7 +12,7 @@
     "@apollo/client": "^3",
     "@hookform/resolvers": "^5.2.2",
     "antd": "^6.1.0",
-    "apollo-upload-client": "18",
+    "apollo-upload-client": "17",
     "graphql": "^16",
     "graphql-request": "^7.4.0",
     "msw": "^1",

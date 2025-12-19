@@ -85,20 +85,27 @@ export default function SolPlaceList({ isPlace }) {
                                         }
                                         alt="img"
                                         fill
+                                        style={{ objectFit: 'cover' }}
                                     />
                                 </div>
                                 <div>
                                     <div className={style.title}>{el.title} </div>
                                     <div className={style.contents}>{el.contents} </div>
                                 </div>
-                                <div className={style.location_wrapper}>
-                                    <div className={style.location_img}>
-                                        <Image src={imgSrc.location} alt="location" fill></Image>
+                                {el.addressCity && (
+                                    <div className={style.location_wrapper}>
+                                        <div className={style.location_img}>
+                                            <Image
+                                                src={imgSrc.location}
+                                                alt="location"
+                                                fill
+                                            ></Image>
+                                        </div>
+                                        <div className={style.address}>
+                                            {el.addressCity} {el.addressTown}
+                                        </div>
                                     </div>
-                                    <div className={style.address}>
-                                        {el.addressCity} {el.addressTown}
-                                    </div>
-                                </div>
+                                )}
                             </Link>
                         ))}
                     </div>

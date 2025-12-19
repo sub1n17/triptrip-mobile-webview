@@ -9,6 +9,7 @@ interface IFormProps {
     schema: any;
     onClickSubmit: (data: any) => void;
     className?: string;
+    defaultValues?: any;
 }
 
 export default function Form<T extends FieldValues>({
@@ -16,10 +17,12 @@ export default function Form<T extends FieldValues>({
     schema,
     onClickSubmit,
     className,
+    defaultValues,
 }: IFormProps) {
     const methods = useForm<T>({
         resolver: zodResolver(schema),
         mode: 'onChange',
+        defaultValues,
     });
 
     return (
