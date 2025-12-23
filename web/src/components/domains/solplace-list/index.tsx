@@ -4,7 +4,7 @@ import style from './styles.module.css';
 import Footer from '@/src/commons/layout/footer/footer';
 import Link from 'next/link';
 import { useRoutingSetting } from '@/src/commons/settings/routing-setting/hook';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { ButtonCircle } from '../../commons/button';
 import { gql, useQuery } from '@apollo/client';
@@ -23,8 +23,9 @@ const FETCH_PLACES = gql`
             id
             title
             contents
-            addressCity
-            addressTown
+            address
+            # addressCity
+            # addressTown
             images
         }
     }
@@ -34,7 +35,7 @@ export default function SolPlaceList({ isPlace }) {
     const { onRouterPush } = useRoutingSetting();
 
     // 게시글 조회
-    const { data } = useQuery(FETCH_PLACES, {
+    const { data, refetch } = useQuery(FETCH_PLACES, {
         variables: { page: 1 },
     });
 
@@ -48,8 +49,8 @@ export default function SolPlaceList({ isPlace }) {
 
     // 당겨서 새로고침 (4개 보여주기)
     const onRefresh = () => {
+        refetch();
         setPlaceCount(4);
-        // alert('리프레시 완료');
     };
 
     return (
@@ -92,7 +93,7 @@ export default function SolPlaceList({ isPlace }) {
                                     <div className={style.title}>{el.title} </div>
                                     <div className={style.contents}>{el.contents} </div>
                                 </div>
-                                {el.addressCity && (
+                                {/* {el.addressCity && (
                                     <div className={style.location_wrapper}>
                                         <div className={style.location_img}>
                                             <Image
@@ -103,6 +104,16 @@ export default function SolPlaceList({ isPlace }) {
                                         </div>
                                         <div className={style.address}>
                                             {el.addressCity} {el.addressTown}
+                                        </div>
+                                    </div>
+                                )} */}
+                                {el.address && (
+                                    <div className={style.location_wrapper}>
+                                        <div className={style.location_img}>
+                                            <Image src={imgSrc.location} alt="location" fill />
+                                        </div>
+                                        <div className={style.address}>
+                                            {el.address.split(' ').slice(0, 2).join(' ')}
                                         </div>
                                     </div>
                                 )}

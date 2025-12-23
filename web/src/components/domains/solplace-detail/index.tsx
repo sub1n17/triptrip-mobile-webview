@@ -5,11 +5,10 @@ import style from './styles.module.css';
 import { useEffect, useState } from 'react';
 import { useDeviceSetting } from '@/src/commons/settings/device-setting/hook';
 import { gql, useQuery } from '@apollo/client';
-import { useParams } from 'next/navigation';
-import { webviewLog } from '@/src/commons/libraries/webview-log';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
-import { MapDetail } from '../../commons/map';
 import Link from 'next/link';
+import { message } from 'antd';
 
 const imgSrc = {
     placeImage: '/images/defaultPlaceImg.jpg',
@@ -38,7 +37,6 @@ const FETCH_PLACE = gql`
 
 export default function SolPlaceDetail() {
     // 조회하기
-
     const params = useParams();
     const { data } = useQuery(FETCH_PLACE, {
         variables: {
@@ -105,6 +103,16 @@ export default function SolPlaceDetail() {
         setMapToggle((prev) => !prev);
     };
 
+    // 수정 후 수정완료 토스트메시지 띄우기
+    const searchParams = useSearchParams();
+    const router = useRouter();
+    useEffect(() => {
+        if (searchParams.get('updated')) {
+            message.success('플레이스 수정 완료');
+            router.replace(`/solplace-logs/${params.solplaceLogId}`); // 쿼리 스트링 없애기
+        }
+    }, [searchParams]);
+
     return (
         <>
             {!isFullScreen && (
@@ -123,8 +131,8 @@ export default function SolPlaceDetail() {
                             </div>
                         ) : (
                             // 이미지 있을 떄
-                            data?.fetchSolplaceLog.images.map((el) => (
-                                <div onClick={onclickFullScreen} key={el}>
+                            data?.fetchSolplaceLog.images.map((el, index) => (
+                                <div onClick={onclickFullScreen} key={`${el}_${index}`}>
                                     <Image
                                         src={`https://storage.googleapis.com/${el}`}
                                         alt="placeImage"

@@ -11,6 +11,7 @@ interface solPlaceNewStore {
     setFiles: (file: File) => void;
     setPreviewUrls: (previewUrls: string) => void;
     setExistingImages: (images: string[]) => void;
+    reset: () => void;
 }
 
 export const useSolPlaceNewStore = create<solPlaceNewStore>((set) => ({
@@ -20,7 +21,7 @@ export const useSolPlaceNewStore = create<solPlaceNewStore>((set) => ({
     contents: '',
     setContents: (contents) => set(() => ({ contents: contents })),
 
-    // 미리보기용
+    // 미리보기용(base64:로컬 미리보기)
     previewUrls: [],
     setPreviewUrls: (previewUrls) =>
         set((state) => ({ previewUrls: [...state.previewUrls, previewUrls] })),

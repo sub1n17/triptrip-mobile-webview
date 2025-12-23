@@ -30,6 +30,18 @@ const CREATE_PLACE = gql`
         }
     }
 `;
+const FETCH_PLACES = gql`
+    query fetchSolplaceLogs($page: Int) {
+        fetchSolplaceLogs(page: $page) {
+            id
+            title
+            contents
+            addressCity
+            addressTown
+            images
+        }
+    }
+`;
 
 export const useInitializeNew = () => {
     const { fetchApp } = useDeviceSetting();
@@ -69,6 +81,7 @@ export const useInitializeNew = () => {
                         images: imagesUrls.filter(Boolean),
                     },
                 },
+                refetchQueries: [{ query: FETCH_PLACES, variables: { page: 1 } }],
             });
 
             message.success('게시글이 등록되었습니다.');

@@ -32,7 +32,7 @@ export default function SolPlaceNew() {
                     onClickSubmit={onClickSubmit}
                     className={style.form_wrapper}
                 >
-                    <ImageUpload></ImageUpload>
+                    <ImageUpload isEdit={false}></ImageUpload>
 
                     <div>
                         <div className={style.form_title}>

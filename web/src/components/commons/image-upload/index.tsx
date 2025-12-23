@@ -15,7 +15,8 @@ interface ImageUploadProps {
 
 export default function ImageUpload({ isEdit }: ImageUploadProps) {
     // zustand
-    const { previewUrls, setPreviewUrls, setFiles, existingImages } = useSolPlaceNewStore();
+    const { previewUrls, setPreviewUrls, setFiles, existingImages, setExistingImages } =
+        useSolPlaceNewStore();
 
     // 이미지 추가하기
     const onChangeFile = (event: ChangeEvent<HTMLInputElement>) => {
@@ -32,8 +33,13 @@ export default function ImageUpload({ isEdit }: ImageUploadProps) {
         fileReader.onload = (event) => {
             const result = event.target?.result;
             if (typeof result === 'string') {
-                setPreviewUrls(result);
-                setFiles(file);
+                if (isEdit) {
+                    setExistingImages([...existingImages, result]); // 기존 이미지와 새로 추가한 이미지 같이 보여주기
+                    setFiles(file); // 서버 업로드용
+                } else {
+                    setPreviewUrls(result); // 새 게시글 작성 시, 미리보기용
+                    setFiles(file); // 새 게시글 작성 시, 서버 업로드용
+                }
             }
         };
     };
@@ -67,7 +73,13 @@ export default function ImageUpload({ isEdit }: ImageUploadProps) {
                     existingImages.map((el, index) => (
                         <div className={style.upload_img} key={`${el}_${index}`}>
                             <Image
-                                src={`https://storage.googleapis.com/${el}`}
+                                // "data:image/png;base64,AAA..."  => base64 미리보기
+                                // 사진 추가하면 base64 경로니까 el이 base64인지/서버 URL인지 구분
+                                src={
+                                    el.startsWith('data:')
+                                        ? el
+                                        : `https://storage.googleapis.com/${el}`
+                                }
                                 alt="img"
                                 width={100}
                                 height={100}
@@ -76,17 +88,18 @@ export default function ImageUpload({ isEdit }: ImageUploadProps) {
                         </div>
                     ))}
                 {/* 새로 업로드한 이미지 */}
-                {previewUrls.map((el, index) => (
-                    <div className={style.upload_img} key={`${el}_${index}`}>
-                        <Image
-                            src={el}
-                            alt="img"
-                            width={100}
-                            height={100}
-                            style={{ aspectRatio: '1/1', objectFit: 'cover' }}
-                        ></Image>
-                    </div>
-                ))}
+                {!isEdit &&
+                    previewUrls.map((el, index) => (
+                        <div className={style.upload_img} key={`${el}_${index}`}>
+                            <Image
+                                src={el}
+                                alt="img"
+                                width={100}
+                                height={100}
+                                style={{ aspectRatio: '1/1', objectFit: 'cover' }}
+                            ></Image>
+                        </div>
+                    ))}
             </div>
         </>
     );

@@ -11,7 +11,7 @@ import { AddressLink } from '../../commons/link';
 import { editSchema } from './schema';
 import { useInitializeEdit } from './form.initialize';
 import { gql, useQuery } from '@apollo/client';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import { useSolPlaceNewStore } from '@/src/commons/stores/solplaceNew-store';
 import { useEffect } from 'react';
 
@@ -31,6 +31,7 @@ const FETCH_PLACE = gql`
 
 export default function SolPlaceDetailEdit() {
     const { onClickSubmit } = useInitializeEdit();
+    const { setTitle, setContents, title, contents } = useSolPlaceNewStore();
 
     // 조회하기
     const params = useParams();
@@ -42,15 +43,11 @@ export default function SolPlaceDetailEdit() {
         },
     });
 
-    const placeAddress = data?.fetchSolplaceLog.address;
-    const placeLat = data?.fetchSolplaceLog.lat;
-    const placeLng = data?.fetchSolplaceLog.lng;
-
-    // form 값 넣기
+    // form 값 넣기, 지도 페이지에서 다시 돌아왔을 때 store에 있는 값 불러와서 수정값 그대로 보이게 하기
     const defaultValues = data?.fetchSolplaceLog
         ? {
-              title: data.fetchSolplaceLog.title,
-              contents: data.fetchSolplaceLog.contents,
+              title: title || data.fetchSolplaceLog.title,
+              contents: contents || data.fetchSolplaceLog.contents,
           }
         : {};
 
@@ -61,6 +58,12 @@ export default function SolPlaceDetailEdit() {
             setExistingImages(data?.fetchSolplaceLog.images);
         }
     }, [data]);
+
+    // 수정된 주소가 있으면 그걸 쓰고, 없으면 원래 주소 사용
+    const searchParams = useSearchParams();
+    const placeAddress = searchParams.get('address') ?? data?.fetchSolplaceLog.address;
+    const placeLat = searchParams.get('lat') ?? data?.fetchSolplaceLog.lat;
+    const placeLng = searchParams.get('lng') ?? data?.fetchSolplaceLog.lng;
 
     return (
         <>
@@ -80,6 +83,7 @@ export default function SolPlaceDetailEdit() {
                         <InputNormal
                             keyname={'title'}
                             placeholder={'플레이스 이름을 입력해 주세요. (1자 이상)'}
+                            onChange={(event) => setTitle(event.target.value)}
                         ></InputNormal>
                     </div>
                     <div>
@@ -102,6 +106,7 @@ export default function SolPlaceDetailEdit() {
                             placeholder={'플레이스 내용을 입력해 주세요. (1자 이상)'}
                             keyname={'contents'}
                             className={style.form_textarea}
+                            onChange={(event) => setContents(event.target.value)}
                         ></Textarea>
                     </div>
                     <Footer text={'수정'}></Footer>

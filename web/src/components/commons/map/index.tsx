@@ -21,9 +21,6 @@ function MapBase({ address, placeLat, placeLng }) {
     // URL에서 좌표값 가져오기
     const lat = searchParams.get('lat');
     const lng = searchParams.get('lng');
-    const addressParam = searchParams.get('address');
-    // from으로 new인지 edit인지 구분하기
-    const from = searchParams.get('from');
 
     const initLocation =
         // 게시글 상세일 때, 조회된 위도경도 값 사용
@@ -141,20 +138,6 @@ function MapBase({ address, placeLat, placeLng }) {
     // 이전 좌표 기억용 ref
     const lastCenterRef = useRef<{ lat: number; lng: number } | null>(null);
 
-    // URL(lat, lng)이 바뀌었을 때, 지도의 중심을 그 좌표로 맞추기
-    // useEffect(() => {
-    //     if (!mapRef.current) return;
-    //     if (!lat || !lng) return;
-
-    //     const nextLat = Number(lat);
-    //     const nextLng = Number(lng);
-
-    //     mapRef.current.setCenter(new window.kakao.maps.LatLng(nextLat, nextLng));
-
-    //     // onIdle 중복 방지
-    //     lastCenterRef.current = { lat: nextLat, lng: nextLng };
-    // }, [lat, lng]);
-
     // 지도 이동 → 역지오코딩 + URL 업데이트
     const onIdle = () => {
         const map = mapRef.current;
@@ -206,24 +189,6 @@ function MapBase({ address, placeLat, placeLng }) {
             >
                 <div className={style.centerMarker} />
             </Map>
-
-            {/* 🔴 여기 추가 */}
-            {/* <div
-                style={{
-                    position: 'fixed',
-                    bottom: 0,
-                    left: 0,
-                    background: '#000',
-                    color: '#0f0',
-                    fontSize: 12,
-                    padding: '4px 8px',
-                    zIndex: 9999,
-                }}
-            >
-                initLat: {initLocation.lat} / initLng: {initLocation.lng}
-                <br />
-                lat: {lat ?? 'null'} / lng: {lng ?? 'null'} / addr: {addressParam ?? 'null'}
-            </div> */}
         </div>
     );
 }
@@ -235,7 +200,3 @@ export function MapNew(props) {
 export function MapEdit(props) {
     return <MapBase {...props} />;
 }
-
-// export function MapDetail(props) {
-//     return <MapBase {...props} />;
-// }
