@@ -2,15 +2,20 @@ import { create } from 'zustand';
 
 interface solPlaceNewStore {
     title: string;
-    contents: string;
-    files: File[];
-    previewUrls: string[];
-    existingImages: string[];
     setTitle: (title: string) => void;
+
+    contents: string;
     setContents: (contents: string) => void;
-    setFiles: (file: File) => void;
-    setPreviewUrls: (previewUrls: string) => void;
+
+    files: File[];
+    setFiles: (file: File[] | ((prev: File[]) => File[])) => void;
+
+    previewUrls: string[];
+    setPreviewUrls: (previewUrls: string[] | ((prev: string[]) => string[])) => void;
+
+    existingImages: string[];
     setExistingImages: (images: string[]) => void;
+
     reset: () => void;
 }
 
@@ -21,14 +26,18 @@ export const useSolPlaceNewStore = create<solPlaceNewStore>((set) => ({
     contents: '',
     setContents: (contents) => set(() => ({ contents: contents })),
 
-    // 미리보기용(base64:로컬 미리보기)
+    // 미리보기용 (base64:로컬 미리보기)
     previewUrls: [],
     setPreviewUrls: (previewUrls) =>
-        set((state) => ({ previewUrls: [...state.previewUrls, previewUrls] })),
+        set((state) => ({
+            previewUrls:
+                typeof previewUrls === 'function' ? previewUrls(state.previewUrls) : previewUrls,
+        })),
 
     // 서버 업로드용
     files: [],
-    setFiles: (files) => set((state) => ({ files: [...state.files, files] })),
+    setFiles: (files) =>
+        set((state) => ({ files: typeof files === 'function' ? files(state.files) : files })),
 
     // 수정할 때, 이미지 보여주기
     existingImages: [],

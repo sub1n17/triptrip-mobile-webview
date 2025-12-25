@@ -86,6 +86,8 @@ export const useInitializeEdit = () => {
                 })
             );
 
+            const editImages = [...existingImages, ...imagesUrls];
+
             await update_log({
                 variables: {
                     id: params.solplaceLogId,
@@ -95,7 +97,7 @@ export const useInitializeEdit = () => {
                         address: address,
                         lat: lat,
                         lng: lng,
-                        images: [...existingImages, ...imagesUrls],
+                        images: editImages,
                     },
                 },
             });

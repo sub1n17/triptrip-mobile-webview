@@ -9,6 +9,10 @@ import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import Link from 'next/link';
 import { message } from 'antd';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination, Navigation } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/pagination';
 
 const imgSrc = {
     placeImage: '/images/defaultPlaceImg.jpg',
@@ -130,17 +134,31 @@ export default function SolPlaceDetail() {
                                 />
                             </div>
                         ) : (
-                            // 이미지 있을 떄
-                            data?.fetchSolplaceLog.images.map((el, index) => (
-                                <div onClick={onclickFullScreen} key={`${el}_${index}`}>
-                                    <Image
-                                        src={`https://storage.googleapis.com/${el}`}
-                                        alt="placeImage"
-                                        fill
-                                        style={{ objectFit: 'cover' }}
-                                    />
-                                </div>
-                            ))
+                            // 이미지 있을 때
+                            <Swiper
+                                pagination={{ type: 'fraction' }}
+                                navigation={true}
+                                modules={[Pagination]}
+                                loop={true}
+                                className="mySwiper"
+                                key={data?.fetchSolplaceLog.images?.length} // 데이터 바뀔 때 Swiper 재생성해서 페이지네이션 NaN 해결
+                            >
+                                {data?.fetchSolplaceLog.images.map((el, index) => (
+                                    <SwiperSlide key={`${el}_${index}`}>
+                                        <div
+                                            className={style.image_inner}
+                                            onClick={onclickFullScreen}
+                                        >
+                                            <Image
+                                                src={`https://storage.googleapis.com/${el}`}
+                                                alt={`placeImage_${index}`}
+                                                fill
+                                                style={{ objectFit: 'cover' }}
+                                            />
+                                        </div>
+                                    </SwiperSlide>
+                                ))}
+                            </Swiper>
                         )}
                     </div>
                     <div className={style.contents_wrapper}>

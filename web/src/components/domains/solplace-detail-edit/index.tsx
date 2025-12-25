@@ -31,7 +31,7 @@ const FETCH_PLACE = gql`
 
 export default function SolPlaceDetailEdit() {
     const { onClickSubmit } = useInitializeEdit();
-    const { setTitle, setContents, title, contents } = useSolPlaceNewStore();
+    const { setTitle, setContents, title, contents, reset } = useSolPlaceNewStore();
 
     // 조회하기
     const params = useParams();
@@ -51,10 +51,17 @@ export default function SolPlaceDetailEdit() {
           }
         : {};
 
+    // 처음엔 인풋과 이미지 모두 초기화시키기
+    useEffect(() => {
+        reset();
+    }, []);
+
     // 이미지 있으면 store에 저장
     const { setExistingImages } = useSolPlaceNewStore();
     useEffect(() => {
-        if (data?.fetchSolplaceLog.images) {
+        if (data?.fetchSolplaceLog) {
+            // setTitle(data?.fetchSolplaceLog.title);
+            // setContents(data?.fetchSolplaceLog.components);
             setExistingImages(data?.fetchSolplaceLog.images);
         }
     }, [data]);
