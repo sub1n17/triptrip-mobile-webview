@@ -1,4 +1,4 @@
-import { HeaderGlobal } from './header/header';
+import { HeaderGlobal, HeaderLocal } from './header/header';
 import style from './styles.module.css';
 
 interface ILayoutProps {
@@ -10,10 +10,11 @@ export default function Layout({ children }: ILayoutProps) {
         <>
             <div className={style.layout_wrapper}>
                 <HeaderGlobal></HeaderGlobal>
+                <HeaderLocal></HeaderLocal>
                 <div
                 // style={{ display: 'flex', flexDirection: 'column', flex: 1 }}
                 >
-                    {children}{' '}
+                    {children}
                 </div>
             </div>
         </>

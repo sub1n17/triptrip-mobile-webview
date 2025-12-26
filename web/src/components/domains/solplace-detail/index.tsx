@@ -10,13 +10,13 @@ import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import Link from 'next/link';
 import { message } from 'antd';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination, Navigation } from 'swiper/modules';
+import { Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
+import { useRoutingSetting } from '@/src/commons/settings/routing-setting/hook';
 
 const imgSrc = {
     placeImage: '/images/defaultPlaceImg.jpg',
-    // placeImage: '/images/placeImage.png',
     edit: '/icons/edit.png',
     location: '/icons/location.png',
     mapDown: '/icons/mapDown.png',
@@ -117,6 +117,8 @@ export default function SolPlaceDetail() {
         }
     }, [searchParams]);
 
+    const { onRouterPush } = useRoutingSetting();
+
     return (
         <>
             {!isFullScreen && (
@@ -171,6 +173,12 @@ export default function SolPlaceDetail() {
                                 <Link
                                     href={`/solplace-logs/${data?.fetchSolplaceLog.id}/edit`}
                                     className={style.edit_img}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        onRouterPush(
+                                            `/solplace-logs/${data?.fetchSolplaceLog.id}/edit`
+                                        );
+                                    }}
                                 >
                                     <Image src={imgSrc.edit} alt="수정하기" fill></Image>
                                 </Link>

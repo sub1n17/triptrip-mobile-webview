@@ -13,7 +13,7 @@ import { useInitializeEdit } from './form.initialize';
 import { gql, useQuery } from '@apollo/client';
 import { useParams, useSearchParams } from 'next/navigation';
 import { useSolPlaceNewStore } from '@/src/commons/stores/solplaceNew-store';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 const FETCH_PLACE = gql`
     query fetchSolplaceLog($id: ID!) {
@@ -31,7 +31,8 @@ const FETCH_PLACE = gql`
 
 export default function SolPlaceDetailEdit() {
     const { onClickSubmit } = useInitializeEdit();
-    const { setTitle, setContents, title, contents, reset } = useSolPlaceNewStore();
+    const { setTitle, setContents, title, contents, setPreviewUrls, setFiles } =
+        useSolPlaceNewStore();
 
     // 조회하기
     const params = useParams();
@@ -51,27 +52,38 @@ export default function SolPlaceDetailEdit() {
           }
         : {};
 
-    // 처음엔 인풋과 이미지 모두 초기화시키기
-    useEffect(() => {
-        reset();
-    }, []);
+    // 수정된 주소가 있으면 그걸 쓰고, 없으면 원래 주소 사용
+    const searchParams = useSearchParams();
+    const placeAddress = searchParams.get('address') ?? data?.fetchSolplaceLog.address ?? '';
+    const placeLat = searchParams.get('lat') ?? data?.fetchSolplaceLog.lat;
+    const placeLng = searchParams.get('lng') ?? data?.fetchSolplaceLog.lng;
+    // 등록된 주소가 없을 때 기본텍스트 보여주기
+    const linkTxtAddress = placeAddress.trim() === '' ? '플레이스 주소 입력' : placeAddress;
+
+    const paramsAddress = searchParams.has('address');
+    const paramsLat = searchParams.has('lat');
+    const paramsLng = searchParams.has('lng');
 
     // 이미지 있으면 store에 저장
     const { setExistingImages } = useSolPlaceNewStore();
+    const initializedRef = useRef(false);
     useEffect(() => {
-        if (data?.fetchSolplaceLog) {
-            // setTitle(data?.fetchSolplaceLog.title);
-            // setContents(data?.fetchSolplaceLog.components);
-            setExistingImages(data?.fetchSolplaceLog.images);
+        if (!data?.fetchSolplaceLog) return;
+        if (initializedRef.current) return; // 주소등록 후 수정페이지로 돌아왔을 때도 추가된 이미지가 보이게 함
+
+        const isFromMap = paramsAddress && paramsLat && paramsLng;
+        setExistingImages(data.fetchSolplaceLog.images);
+        // 지도에서 돌아온 게 아니면 (최초 진입)
+        if (!isFromMap) {
+            setPreviewUrls([]);
+            setFiles([]);
         }
-    }, [data]);
 
-    // 수정된 주소가 있으면 그걸 쓰고, 없으면 원래 주소 사용
-    const searchParams = useSearchParams();
-    const placeAddress = searchParams.get('address') ?? data?.fetchSolplaceLog.address;
-    const placeLat = searchParams.get('lat') ?? data?.fetchSolplaceLog.lat;
-    const placeLng = searchParams.get('lng') ?? data?.fetchSolplaceLog.lng;
-
+        initializedRef.current = true;
+    }, [data?.fetchSolplaceLog?.id]);
+    // useRef는 참조용으로 DOM을 가리킬 수도 있고, 값을 기억하는 욛도로 사용됨, 지금은 후자 (이미지 업로드는 전자)
+    // 컴포넌트가 마운트될 때 1번 생성되고 언마운트될 때(수정 페이지 벗어날 때) 사라짐 -> 다시 수정페이지 새로 진입 시 false
+    // 주소 등록 후 수정페이지로 돌아오는 건 샬로우라우팅이라서 언마운트되는게 아니기 때문에 계속 true 유지
     return (
         <>
             <main className={style.container}>
@@ -101,7 +113,7 @@ export default function SolPlaceDetailEdit() {
                             }&lat=${placeLat}&lng=${placeLng}&address=${encodeURIComponent(
                                 placeAddress ?? ''
                             )}`}
-                            placeAddress={placeAddress}
+                            placeAddress={linkTxtAddress}
                         ></AddressLink>
                     </div>
                     <div>

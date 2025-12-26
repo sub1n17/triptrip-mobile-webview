@@ -86,6 +86,7 @@ export const useInitializeEdit = () => {
                 })
             );
 
+            // 기존 이미지와 새로 추가한 이미지 같이 보여주기
             const editImages = [...existingImages, ...imagesUrls];
 
             await update_log({

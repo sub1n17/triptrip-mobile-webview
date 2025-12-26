@@ -40,6 +40,20 @@ export const headerType = (params: IHeaderTypeProps) => ({
 
     localHeader: {
         [`/solplace-logs/${params.solplaceLogId}`]: {
+            title: '',
+            hasLogo: false,
+            hasBack: true,
+            isTransParent: true,
+        },
+        [`/solplace-logs/${params.solplaceLogId}/map`]: {
+            title: '',
+            hasLogo: false,
+            hasBack: true,
+            isTransParent: true,
+        },
+        [`/solplace-logs/new/map`]: {
+            title: '',
+            hasLogo: false,
             hasBack: true,
             isTransParent: true,
         },

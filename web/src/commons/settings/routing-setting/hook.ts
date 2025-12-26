@@ -9,7 +9,7 @@ export const useRoutingSetting = () => {
     const pathname = usePathname();
     const { fetchApp } = useDeviceSetting();
 
-    const onRouterPush = (href) => {
+    const onRouterPush = (href: string) => {
         // 링크 태그의 기본 페이지 이동 기능 막기
         // event.preventDefault?.();
 
@@ -27,7 +27,7 @@ export const useRoutingSetting = () => {
             });
         } else {
             // 뷰트랜지션 안 되면 그냥 페이지 이동
-            return router.push(event.target.href);
+            return router.push(href);
         }
     };
 

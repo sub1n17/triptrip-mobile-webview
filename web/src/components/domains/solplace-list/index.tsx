@@ -132,7 +132,7 @@ export default function SolPlaceList({ isPlace }) {
                     </ButtonCircle>
                 </Link>
             </main>
-            <Footer isPlace={isPlace}></Footer>
+            <Footer navActive={'isPlace'}></Footer>
         </>
     );
 }

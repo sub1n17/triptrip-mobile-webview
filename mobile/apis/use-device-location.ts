@@ -30,7 +30,6 @@ export const useDeviceLocation = (onResponse) => {
             });
         }
     };
-    // fetchDeviceLocationForLatLngSet();
 
     // 위치 권한 조회하기
     const fetchDeviceLocationForPermissionSet = async () => {

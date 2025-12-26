@@ -12,6 +12,7 @@ import ImageUpload from '../../commons/image-upload';
 import { AddressLink } from '../../commons/link';
 import { useSearchParams } from 'next/navigation';
 import { useSolPlaceNewStore } from '@/src/commons/stores/solplaceNew-store';
+import { useEffect } from 'react';
 
 export default function SolPlaceNew() {
     const searchParams = useSearchParams();
@@ -22,7 +23,12 @@ export default function SolPlaceNew() {
     const { onClickSubmit } = useInitializeNew();
 
     // zustand
-    const { title, setTitle, contents, setContents } = useSolPlaceNewStore();
+    const { title, setTitle, contents, setContents, reset } = useSolPlaceNewStore();
+
+    // 처음엔 인풋과 이미지 모두 초기화시키기
+    useEffect(() => {
+        reset();
+    }, []);
 
     return (
         <>

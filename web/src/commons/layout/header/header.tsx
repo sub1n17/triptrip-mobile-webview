@@ -3,7 +3,8 @@
 import Image from 'next/image';
 import style from './styles.module.css';
 import { headerType } from './constants';
-import { useParams, usePathname } from 'next/navigation';
+import { useParams, usePathname, useRouter } from 'next/navigation';
+import { useRoutingSetting } from '../../settings/routing-setting/hook';
 
 const imgSrc = {
     backBtn: '/icons/backBtn.png',
@@ -18,6 +19,8 @@ interface IHeaderBaseProps {
 }
 
 const HeaderBase = ({ title, hasLogo, hasBack, isTransParent }: IHeaderBaseProps) => {
+    const router = useRouter();
+    const { onRouterBack } = useRoutingSetting();
     return (
         <>
             <header
@@ -33,7 +36,7 @@ const HeaderBase = ({ title, hasLogo, hasBack, isTransParent }: IHeaderBaseProps
                 )}
 
                 {hasBack && (
-                    <div className={style.backBtn_img}>
+                    <div className={style.backBtn_img} onClick={onRouterBack}>
                         <Image src={imgSrc.backBtn} alt="backBtn" fill></Image>
                     </div>
                 )}
@@ -62,8 +65,26 @@ export function HeaderGlobal() {
 
 export function HeaderLocal() {
     const pathname = usePathname();
-    const params = useParams();
-    const options = headerType(params).localHeader[pathname];
+    // const params = useParams();
+    // const options = headerType(params).localHeader[pathname];
+
+    // 상세페이지일 때
+    const isDetailPage =
+        pathname.startsWith('/solplace-logs/') &&
+        !pathname.endsWith('/edit') &&
+        !pathname.endsWith('/map') &&
+        !pathname.endsWith('/new');
+    // 지도페이지일 때 (쿼리스트링은 pathname에 포함x)
+    const isMapPage = pathname.endsWith('/map');
+    const options =
+        isDetailPage || isMapPage
+            ? {
+                  title: '',
+                  hasLogo: false,
+                  hasBack: true,
+                  isTransParent: true,
+              }
+            : null;
 
     return (
         <>

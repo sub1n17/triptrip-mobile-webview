@@ -36,7 +36,6 @@ export default function ImageUpload({ isEdit }: ImageUploadProps) {
             if (typeof result === 'string') {
                 if (isEdit) {
                     setPreviewUrls((prev) => [...prev, result]);
-                    // setExistingImages([...existingImages, result]); // 기존 이미지와 새로 추가한 이미지 같이 보여주기
                     setFiles((prev) => [...prev, file]); // 서버 업로드용
                 } else {
                     setPreviewUrls((prev) => [...prev, result]); // 새 게시글 작성 시, 미리보기용
