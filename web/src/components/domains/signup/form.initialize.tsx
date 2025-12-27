@@ -52,7 +52,7 @@ export const useInitializeSignUp = () => {
     // 모달창 버튼 클릭 시 로그인 페이지로 이동
     const onClickLogin = () => {
         setOpen(false);
-        router.push('/onBoarding/login');
+        router.push('/login');
     };
 
     // 회원가입 축하 모달

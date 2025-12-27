@@ -25,9 +25,14 @@ export default function Form<T extends FieldValues>({
         defaultValues,
     });
 
+    const handleSubmit = async (data: T) => {
+        await onClickSubmit(data); // props로 받은 onclick함수 실행시키기
+        methods.reset(); // 실행시킨 후 폼 초기화
+    };
+
     return (
         <FormProvider {...methods}>
-            <form onSubmit={methods.handleSubmit(onClickSubmit)} className={className}>
+            <form onSubmit={methods.handleSubmit(handleSubmit)} className={className}>
                 {children}
             </form>
         </FormProvider>

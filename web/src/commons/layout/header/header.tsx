@@ -5,6 +5,7 @@ import style from './styles.module.css';
 import { headerType } from './constants';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import { useRoutingSetting } from '../../settings/routing-setting/hook';
+import { useFullscreenStore } from '../../stores/fullscreen-store';
 
 const imgSrc = {
     backBtn: '/icons/backBtn.png',
@@ -76,6 +77,11 @@ export function HeaderLocal() {
         !pathname.endsWith('/new');
     // 지도페이지일 때 (쿼리스트링은 pathname에 포함x)
     const isMapPage = pathname.endsWith('/map');
+
+    // 상세페이지의 이미지가 풀스크린일 때 헤더 숨기기
+    const { isImageFullscreen } = useFullscreenStore();
+    if (isImageFullscreen) return null;
+
     const options =
         isDetailPage || isMapPage
             ? {

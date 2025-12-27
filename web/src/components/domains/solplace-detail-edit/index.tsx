@@ -72,9 +72,9 @@ export default function SolPlaceDetailEdit() {
         if (initializedRef.current) return; // 주소등록 후 수정페이지로 돌아왔을 때도 추가된 이미지가 보이게 함
 
         const isFromMap = paramsAddress && paramsLat && paramsLng;
-        setExistingImages(data.fetchSolplaceLog.images);
         // 지도에서 돌아온 게 아니면 (최초 진입)
         if (!isFromMap) {
+            setExistingImages(data.fetchSolplaceLog.images);
             setPreviewUrls([]);
             setFiles([]);
         }

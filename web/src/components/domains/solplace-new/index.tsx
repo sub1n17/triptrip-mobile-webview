@@ -23,12 +23,7 @@ export default function SolPlaceNew() {
     const { onClickSubmit } = useInitializeNew();
 
     // zustand
-    const { title, setTitle, contents, setContents, reset } = useSolPlaceNewStore();
-
-    // 처음엔 인풋과 이미지 모두 초기화시키기
-    useEffect(() => {
-        reset();
-    }, []);
+    const { title, setTitle, contents, setContents } = useSolPlaceNewStore();
 
     return (
         <>

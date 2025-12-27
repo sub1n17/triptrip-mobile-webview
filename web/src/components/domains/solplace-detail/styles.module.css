@@ -81,42 +81,8 @@
     line-height: 20px;
 }
 
-/* 이미지 풀스크린 */
-.fullscreen_wrapper {
-    width: 100vw;
-    height: 100vh;
-    background-color: black;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 9998;
-    overflow: hidden;
-    /* 🚨 핵심 ①: wrapper는 스크롤 금지 */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.imageClose_img {
-    position: fixed;
-    top: 1.25rem;
-    right: 1.25rem;
-    width: 1.5rem;
-    height: 1.5rem;
-    z-index: 10000;
-}
 
 
-.placeImage_img {
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    /* 🚨 핵심 ②: 이미지 영역만 스크롤/줌 가능 */
-    touch-action: pinch-zoom;
-    /* 🚨 핵심 ③: 핀치줌 허용 */
-    position: relative;
-    z-index: 1;
-}
 
 .image_inner {
     position: relative;
@@ -151,10 +117,75 @@
     color: #F2F2F2;
 }
 
-.image_wrapper :global(.swiper-pagination-current) {
+.image_wrapper :global(.swiper-pagination-current),
+.fullscreen_wrapper :global(.swiper-pagination-current) {
     margin-right: 0.25rem;
 }
 
-.image_wrapper :global(.swiper-pagination-total) {
+.image_wrapper :global(.swiper-pagination-total),
+.fullscreen_wrapper :global(.swiper-pagination-total) {
     margin-left: 0.25rem;
+}
+
+/* 이미지 풀스크린 */
+.fullscreen_wrapper {
+    width: 100vw;
+    height: 100vh;
+    background-color: black;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+.zoom_wrapper {
+    width: 100%;
+    height: 100%;
+
+}
+
+.imageClose_img {
+    position: fixed;
+    /* top: 1.25rem; */
+    top: calc(env(safe-area-inset-top) + 1.25rem);
+    /* ㄴ> 상단바랑 겹쳐서 터치 안 먹히는 현상 해결하기 */
+    left: 1.25rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    z-index: 2;
+}
+
+.fullscreen_wrapper :global(.full_Image) {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+/* 풀스크린 페이지네이션 */
+.fullscreen_wrapper :global(.fullscreen_pagination) {
+    position: fixed;
+    right: 1.25rem;
+    left: auto;
+    bottom: calc(env(safe-area-inset-bottom) + 1.25rem);
+    /* ㄴ> 하단 제스처 바(홈바)에 UI가 가려지는 걸 막기 */
+    padding: 0.25rem 0.5rem;
+    width: auto;
+    min-width: 2.5rem;
+    min-height: 1.25rem;
+    border-radius: 6.25rem;
+    background: rgba(0, 0, 0, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.688rem;
+    color: #F2F2F2;
+    pointer-events: none;
+    /* ㄴ> 스와이프 방해 안 하게 */
+}
+
+.placeImage_img {
+    position: relative;
+    width: 100%;
+    height: 100%;
 }

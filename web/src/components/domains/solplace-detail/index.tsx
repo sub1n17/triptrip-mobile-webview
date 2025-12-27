@@ -11,9 +11,12 @@ import Link from 'next/link';
 import { message } from 'antd';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
+import { Zoom } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
+import 'swiper/css/zoom';
 import { useRoutingSetting } from '@/src/commons/settings/routing-setting/hook';
+import { useFullscreenStore } from '@/src/commons/stores/fullscreen-store';
 
 const imgSrc = {
     placeImage: '/images/defaultPlaceImg.jpg',
@@ -35,6 +38,7 @@ const FETCH_PLACE = gql`
             lat
             lng
             images
+            userId
         }
     }
 `;
@@ -54,52 +58,42 @@ export default function SolPlaceDetail() {
 
     // 이미지 풀스크린 상태
     const [isFullScreen, setIsFullScreen] = useState(false);
-
+    // 클릭 상태
+    const [scale, setScale] = useState(1);
+    // 풀스크린 시 헤더 숨기기 (상세페이지의 헤더 백버튼 숨기기)
+    const { setImageFullscreen } = useFullscreenStore();
     // 이미지 풀스크린
     const onclickFullScreen = async () => {
         setIsFullScreen(true);
-        await fetchApp({ query: 'toggleDeviceLayoutForFullScreenSet' });
+        setImageFullscreen(true);
+        // pushState : 페이지는 안 바꾸고, 뒤로가기 기록만 하나 추가하는 것 (state로 관리해서 뒤로가기 시 목록이 나오는 현상 해결하기 위해 뒤로가기 기록 추가)
+        window.history.pushState({ fullscreen: true }, '');
 
-        // 핀치줌 허용
-        const viewport = document.querySelector('meta[name="viewport"]');
-        // viewport?.setAttribute(
-        //     'content',
-        //     `
-        //         width=device-width,
-        //         initial-scale=1.0,
-        //         minimum-scale=1.0,
-        //         maximum-scale=3.0,
-        //         user-scalable=yes
-        //     `
-        // );
-        viewport?.setAttribute(
-            'content',
-            'width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes'
-        );
+        await fetchApp({ query: 'setFullScreenLayout' });
     };
 
-    // 이미지 닫기
-    const onclickClose = async () => {
+    const closeFullscreen = async () => {
         setIsFullScreen(false);
-        await fetchApp({ query: 'toggleDeviceLayoutForFullScreenSet' });
-
-        // 핀치줌 비허용
-        const viewport = document.querySelector('meta[name="viewport"]');
-        // viewport?.setAttribute(
-        //     'content',
-        //     `
-        //         width=device-width,
-        //         initial-scale=1.0,
-        //         minimum-scale=1.0,
-        //         maximum-scale=1.0,
-        //         user-scalable=no
-        //     `
-        // );
-        viewport?.setAttribute(
-            'content',
-            'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'
-        );
+        setImageFullscreen(false);
+        setScale(1);
+        await fetchApp({ query: 'setDefaultLayout' });
     };
+
+    // 이미지 닫기 버튼 (실제 닫기 로직은 popstate에서 처리)
+    const onclickClose = () => {
+        closeFullscreen();
+    };
+
+    // popstate 감지
+    useEffect(() => {
+        const handlePopState = () => {
+            if (isFullScreen) {
+                closeFullscreen();
+            }
+        };
+        window.addEventListener('popstate', handlePopState);
+        return () => window.removeEventListener('popstate', handlePopState);
+    }, [isFullScreen]);
 
     // 지도 토글
     const [mapToggle, setMapToggle] = useState(false);
@@ -127,7 +121,7 @@ export default function SolPlaceDetail() {
                     <div className={style.image_wrapper}>
                         {/* 이미지 없으면 기본 이미지 */}
                         {data?.fetchSolplaceLog.images.length === 0 ? (
-                            <div>
+                            <div onClick={onclickFullScreen}>
                                 <Image
                                     src={imgSrc.placeImage}
                                     alt="placeImage"
@@ -245,18 +239,69 @@ export default function SolPlaceDetail() {
             {/* 풀스크린 이미지 */}
             {isFullScreen && (
                 <div className={style.fullscreen_wrapper}>
+                    {/* 닫기 버튼은 스케일 영향 받지 않게 하기 */}
                     <button className={style.imageClose_img} onClick={onclickClose}>
                         <Image src={imgSrc.imageClose} alt="이미지 닫기" fill></Image>
                     </button>
-                    <div className={style.placeImage_img}>
-                        <Image
-                            src={imgSrc.placeImage}
-                            alt="이미지"
-                            fill
-                            sizes="100vw"
-                            style={{ objectFit: 'contain' }}
-                            unoptimized
-                        ></Image>
+                    {/* 페이지네이션은 Swiper 밖에 두기 */}
+                    <div className="fullscreen_pagination" />
+
+                    {/* 이미지만 스케일 허용하기 */}
+                    <div className={style.zoom_wrapper}>
+                        {/* 이미지 없으면 기본 이미지 */}
+                        {data?.fetchSolplaceLog.images.length === 0 ? (
+                            <div
+                                className={style.placeImage_img}
+                                style={{
+                                    transform: `scale(${scale})`,
+                                    transition: 'all 0.2s',
+                                }}
+                                onDoubleClick={() => {
+                                    setScale((prev) => (prev === 1 ? 2 : 1));
+                                }}
+                            >
+                                <Image
+                                    src={imgSrc.placeImage}
+                                    alt="이미지"
+                                    fill
+                                    sizes="100vw"
+                                    style={{ objectFit: 'contain' }}
+                                    unoptimized
+                                ></Image>
+                            </div>
+                        ) : (
+                            // 이미지 있을 때
+                            <div style={{ width: '100%', height: '100%' }}>
+                                <Swiper
+                                    pagination={{ type: 'fraction', el: '.fullscreen_pagination' }} // 외부 DOM으로 페이지네이션 지정
+                                    navigation={true}
+                                    modules={[Pagination, Zoom]}
+                                    loop={true}
+                                    className="full_Image"
+                                    key={data?.fetchSolplaceLog.images?.length} // 데이터 바뀔 때 Swiper 재생성해서 페이지네이션 NaN 해결
+                                    zoom={{
+                                        maxRatio: 2, // 최대 확대 배수
+                                        minRatio: 1, // 최소
+                                        toggle: true, // 더블탭으로 토글
+                                    }}
+                                >
+                                    {data?.fetchSolplaceLog.images.map((el, index) => (
+                                        <SwiperSlide key={`${el}_${index}`}>
+                                            <div className="swiper-zoom-container">
+                                                <div className={style.placeImage_img}>
+                                                    <Image
+                                                        src={`https://storage.googleapis.com/${el}`}
+                                                        alt={`placeImage_${index}`}
+                                                        fill
+                                                        style={{ objectFit: 'contain' }}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </SwiperSlide>
+                                    ))}
+                                </Swiper>
+                            </div>
+                        )}
                     </div>
                 </div>
             )}

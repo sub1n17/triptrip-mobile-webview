@@ -4,6 +4,7 @@ import { gql, useMutation, useQuery } from '@apollo/client';
 import { editSchemaType } from './schema';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useSolPlaceNewStore } from '@/src/commons/stores/solplaceNew-store';
+import { message } from 'antd';
 
 const UPLOAD_FILE = gql`
     mutation uploadFile($file: Upload) {
@@ -103,9 +104,20 @@ export const useInitializeEdit = () => {
                 },
             });
 
-            router.push(`/solplace-logs/${params.solplaceLogId}?updated=true`);
+            router.replace(`/solplace-logs/${params.solplaceLogId}?updated=true`);
         } catch (error) {
-            alert((error as Error).message);
+            const err = error as Error;
+
+            if (err.message.includes('작성자')) {
+                message.error({
+                    content: err.message,
+                    duration: 2,
+                });
+
+                router.replace(`/solplace-logs/${params.solplaceLogId}`);
+                return;
+            }
+            message.error(err.message);
         }
     };
     return {

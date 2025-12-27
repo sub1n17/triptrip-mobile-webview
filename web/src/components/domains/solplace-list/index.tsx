@@ -35,29 +35,48 @@ export default function SolPlaceList({ isPlace }) {
     const { onRouterPush } = useRoutingSetting();
 
     // 게시글 조회
-    const { data, refetch } = useQuery(FETCH_PLACES, {
+    const { data, fetchMore, refetch } = useQuery(FETCH_PLACES, {
         variables: { page: 1 },
     });
 
-    const [placeCount, setPlaceCount] = useState(4);
-    const list = data?.fetchSolplaceLogs.slice(0, placeCount) ?? [];
+    const [page, setPage] = useState(1);
+    const list = data?.fetchSolplaceLogs ?? [];
 
-    // 무한 스크롤 (4개씩 게시글 더 보여주기)
+    // 무한 스크롤
     const onNext = () => {
-        setPlaceCount((prev) => prev + 4);
+        fetchMore({
+            variables: {
+                page: page + 1,
+            },
+            updateQuery: (prev, { fetchMoreResult }) => {
+                // 더 이상 불러올 데이터 없으면 이전 값으로 두기
+                if (!fetchMoreResult.fetchSolplaceLogs.length) return prev;
+
+                // 데이터가 더 있으면 페이지 업데이트
+                setPage((prev) => prev + 1);
+
+                // 기존 데이터와 새로 불러온 데이터 합쳐서 보여주기
+                return {
+                    fetchSolplaceLogs: [
+                        ...prev.fetchSolplaceLogs,
+                        ...fetchMoreResult.fetchSolplaceLogs,
+                    ],
+                };
+            },
+        });
     };
 
     // 당겨서 새로고침 (4개 보여주기)
     const onRefresh = () => {
-        refetch();
-        setPlaceCount(4);
+        setPage(1);
+        refetch({ page: 1 });
     };
 
     return (
         <>
             <main className={style.place_wrapper}>
                 <InfiniteScroll
-                    hasMore={list.length < (data?.fetchSolplaceLogs.length ?? 0)}
+                    hasMore={true}
                     next={onNext}
                     loader={<div>로딩중</div>}
                     dataLength={list.length}
