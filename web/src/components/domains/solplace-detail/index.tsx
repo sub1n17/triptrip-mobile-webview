@@ -169,7 +169,7 @@ export default function SolPlaceDetail() {
                                     className={style.edit_img}
                                     onClick={(e) => {
                                         e.preventDefault();
-                                        onRouterPush(
+                                        router.replace(
                                             `/solplace-logs/${data?.fetchSolplaceLog.id}/edit`
                                         );
                                     }}

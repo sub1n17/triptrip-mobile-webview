@@ -99,7 +99,11 @@ export default function SolPlaceList({ isPlace }) {
                                 <div className={style.place_img}>
                                     <Image
                                         src={
-                                            el.images?.[0]
+                                            // el.images?.[0]
+                                            Array.isArray(el.images) &&
+                                            el.images.length > 0 &&
+                                            typeof el.images[0] === 'string' &&
+                                            el.images[0].trim() !== ''
                                                 ? `https://storage.googleapis.com/${el.images[0]}`
                                                 : imgSrc.defaultPlaceImg
                                         }
