@@ -111,7 +111,7 @@ export default function SolPlaceDetail() {
         }
     }, [searchParams]);
 
-    const { onRouterPush } = useRoutingSetting();
+    // const { onRouterPush } = useRoutingSetting();
 
     return (
         <>
@@ -169,7 +169,7 @@ export default function SolPlaceDetail() {
                                     className={style.edit_img}
                                     onClick={(e) => {
                                         e.preventDefault();
-                                        router.replace(
+                                        router.push(
                                             `/solplace-logs/${data?.fetchSolplaceLog.id}/edit`
                                         );
                                     }}

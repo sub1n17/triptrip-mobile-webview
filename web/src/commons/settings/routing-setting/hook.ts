@@ -1,4 +1,4 @@
-import { usePathname, useRouter } from 'next/navigation';
+import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useDeviceSetting } from '../device-setting/hook';
 
 // 메인페이지 구분하기
@@ -37,6 +37,8 @@ export const useRoutingSetting = () => {
         }
     };
 
+    const params = useParams();
+    const searchParams = useSearchParams();
     // 백버튼 클릭 시 뒤로가기 및 앱 종료
     const onRouterBack = () => {
         // 뷰트랜지션 공통 함수
@@ -71,8 +73,29 @@ export const useRoutingSetting = () => {
             return;
         }
 
-        // 메인페이지에서 백버튼 누르면 앱 종료하기
+        // 수정 완료 후 상세페이지 →  목록으로 이동
+        if (
+            pathname === `/solplace-logs/${params.solplaceLogId}` &&
+            searchParams.get('updated') === 'true'
+        ) {
+            backTransition(() => router.replace('/solplace-logs'));
+            return;
+        }
+
+        // 상세 페이지 → 목록 페이지
+        if (pathname === `/solplace-logs/${params.solplaceLogId}`) {
+            backTransition(() => router.replace('/solplace-logs'));
+            return;
+        }
+
+        // 수정 페이지 → 상세페이지
+        if (pathname === `/solplace-logs/${params.solplaceLogId}/edit`) {
+            backTransition(() => router.replace(`/solplace-logs/${params.solplaceLogId}`));
+            return;
+        }
+
         if (mainPage.includes(pathname)) {
+            // 메인페이지에서 백버튼 누르면 앱 종료하기
             return fetchApp({ query: 'exitDeviceRoutingForBackSet' });
         }
 
