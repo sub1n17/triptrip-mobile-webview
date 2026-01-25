@@ -36,8 +36,9 @@ const FETCH_PLACES = gql`
             id
             title
             contents
-            addressCity
-            addressTown
+            address
+            # addressCity
+            # addressTown
             images
         }
     }
@@ -65,7 +66,7 @@ export const useInitializeNew = () => {
                 files.map(async (el) => {
                     const result = await uploadFile({ variables: { file: el } });
                     return result.data.uploadFile.url;
-                })
+                }),
             );
 
             // const imagesUrls = imagesFiles.map((el) => el.data.uploadFile.url);
@@ -99,7 +100,7 @@ export const useInitializeNew = () => {
             // 등록 후, 전역 상태 초기화하기
             useSolPlaceNewStore.getState().reset();
         } catch (error) {
-            alert((error as Error).message);
+            message.error((error as Error).message);
         }
     };
 

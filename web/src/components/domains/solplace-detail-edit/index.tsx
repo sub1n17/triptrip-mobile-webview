@@ -25,6 +25,7 @@ const FETCH_PLACE = gql`
             lat
             lng
             images
+            userId
         }
     }
 `;
@@ -111,7 +112,7 @@ export default function SolPlaceDetailEdit() {
                             href={`/solplace-logs/${params.solplaceLogId}/edit/map?from=edit&id=${
                                 params.solplaceLogId
                             }&lat=${placeLat}&lng=${placeLng}&address=${encodeURIComponent(
-                                placeAddress ?? ''
+                                placeAddress ?? '',
                             )}`}
                             placeAddress={linkTxtAddress}
                         ></AddressLink>

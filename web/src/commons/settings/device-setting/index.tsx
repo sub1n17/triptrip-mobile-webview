@@ -1,16 +1,24 @@
 'use client';
 
-import { useEffect } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { useRoutingSetting } from '../routing-setting/hook';
 
-// 요청한 API 모아두기
-export const requestAPI = {};
+type DeviceSettingProps = {
+    children: ReactNode;
+};
 
-export const DeviceSetting = ({ children }) => {
+// 요청한 API 모아두기
+export const requestAPI: {
+    [key: string]: (value: unknown) => void;
+} = {};
+// export const requestAPI = {};
+
+export const DeviceSetting = ({ children }: DeviceSettingProps) => {
     const { onRouterPush, onRouterBack } = useRoutingSetting();
 
     useEffect(() => {
-        const messageHandler = (message) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const messageHandler = (message: any) => {
             if (!message.data) return;
 
             let response = message.data;

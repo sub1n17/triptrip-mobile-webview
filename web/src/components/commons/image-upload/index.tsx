@@ -52,7 +52,7 @@ export default function ImageUpload({ isEdit }: ImageUploadProps) {
     };
 
     // 이미지 삭제하기
-    const onClickDelete = (index) => {
+    const onClickDelete = (index: number) => {
         if (isEdit) {
             setPreviewUrls(previewUrls.filter((_, i) => i !== index));
             // 삭제된 인덱스 제외하고 existingImages에 넣기

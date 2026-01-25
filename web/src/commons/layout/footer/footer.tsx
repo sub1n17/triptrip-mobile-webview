@@ -6,7 +6,7 @@ import Link from 'next/link';
 interface IFooterProps {
     text?: string;
     isLogin?: boolean;
-    navActive?: string;
+    navActive?: 'isPlace' | 'isMypage';
 }
 
 export default function Footer({ text, isLogin, navActive }: IFooterProps) {

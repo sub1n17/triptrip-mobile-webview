@@ -1,5 +1,13 @@
 import style from './styles.module.css';
-export const Toggle = ({ title, onClick, permissions, id }) => {
+
+interface ToggleProps {
+    title: string;
+    permissions: boolean;
+    id: string;
+    onClick?: () => void;
+}
+
+export const Toggle = ({ title, onClick, permissions, id }: ToggleProps) => {
     return (
         <div className={style.toggle_wrapper}>
             <div className={style.toggle_title}>{title}</div>

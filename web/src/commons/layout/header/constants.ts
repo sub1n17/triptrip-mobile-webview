@@ -35,6 +35,12 @@ export const headerType = (params: IHeaderTypeProps) => ({
             hasBack: false,
             isTransParent: false,
         },
+        '/signup': {
+            title: '회원가입',
+            hasLogo: false,
+            hasBack: true,
+            isTransParent: false,
+        },
     } as Record<string, HeaderOptions>,
     // ㄴ> string 키를 가지는 객체인데 그 값은 모두 HeaderOptions 타입이어야 함
 

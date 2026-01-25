@@ -4,11 +4,11 @@ import Image from 'next/image';
 import style from './styles.module.css';
 import { useEffect, useState } from 'react';
 import { useDeviceSetting } from '@/src/commons/settings/device-setting/hook';
-import { gql, useQuery } from '@apollo/client';
+import { gql, useMutation, useQuery } from '@apollo/client';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import Link from 'next/link';
-import { message } from 'antd';
+import { MenuProps, message, Modal } from 'antd';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
 import { Zoom } from 'swiper/modules';
@@ -17,7 +17,17 @@ import 'swiper/css/pagination';
 import 'swiper/css/zoom';
 import { useRoutingSetting } from '@/src/commons/settings/routing-setting/hook';
 import { useFullscreenStore } from '@/src/commons/stores/fullscreen-store';
+import { FetchSolplaceLogDocument, FetchSolplaceLogsDocument } from '@/src/commons/graphql/graphql';
+import { useAccessTokenStore } from '@/src/commons/stores/token-store';
+import { jwtDecode } from 'jwt-decode';
+import { Dropdown, Space } from 'antd';
+import { EllipsisOutlined } from '@ant-design/icons';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 
+interface ITokenPayload {
+    id: string; // = userId
+}
 const imgSrc = {
     placeImage: '/images/defaultPlaceImg.jpg',
     edit: '/icons/edit.png',
@@ -28,27 +38,32 @@ const imgSrc = {
     imageClose: '/images/image_close.png',
 };
 
-const FETCH_PLACE = gql`
-    query fetchSolplaceLog($id: ID!) {
-        fetchSolplaceLog(id: $id) {
-            id
-            title
-            contents
-            address
-            lat
-            lng
-            images
-            userId
-        }
+// const FETCH_PLACE = gql`
+//     query fetchSolplaceLog($id: ID!) {
+//         fetchSolplaceLog(id: $id) {
+//             id
+//             title
+//             contents
+//             address
+//             lat
+//             lng
+//             images
+//             userId
+//         }
+//     }
+// `;
+
+const DELETE_PLACE = gql`
+    mutation deleteSolplaceLog($id: ID!) {
+        deleteSolplaceLog(id: $id)
     }
 `;
-
 export default function SolPlaceDetail() {
     // 조회하기
     const params = useParams();
-    const { data } = useQuery(FETCH_PLACE, {
+    const { data } = useQuery(FetchSolplaceLogDocument, {
         variables: {
-            id: params.solplaceLogId,
+            id: String(params.solplaceLogId),
         },
     });
     const placeLat = data?.fetchSolplaceLog.lat === 0 ? null : data?.fetchSolplaceLog.lat;
@@ -111,7 +126,75 @@ export default function SolPlaceDetail() {
         }
     }, [searchParams]);
 
-    // const { onRouterPush } = useRoutingSetting();
+    // 수정/삭제 작성자만 보이게 하기 (토큰에서 사용자 아이디 가져오기)
+    const { accessToken } = useAccessTokenStore();
+    const loginUserId = accessToken ? jwtDecode<ITokenPayload>(accessToken).id : null;
+
+    const onClickEdit = () => {
+        if (!data?.fetchSolplaceLog.id) return;
+        router.push(`/solplace-logs/${data?.fetchSolplaceLog.id}/edit`);
+    };
+
+    const [delete_place] = useMutation(DELETE_PLACE, {
+        variables: {
+            id: String(params.solplaceLogId),
+        },
+    });
+
+    const onClickDelete = async () => {
+        Modal.confirm({
+            title: '플레이스를 삭제하시겠습니까?',
+            okText: '삭제',
+            cancelText: '취소',
+            okType: 'danger',
+            centered: true,
+
+            onOk: async () => {
+                try {
+                    await delete_place({
+                        variables: {
+                            id: String(params.solplaceLogId),
+                        },
+                        refetchQueries: [
+                            { query: FetchSolplaceLogsDocument, variables: { page: 1 } },
+                        ],
+                    });
+                    setTimeout(() => {
+                        message.success('플레이스가 삭제되었습니다.');
+                    }, 100);
+                    router.replace('/solplace-logs');
+                } catch (err) {
+                    message.error((err as Error).message);
+                }
+            },
+        });
+    };
+
+    // 더보기 드롭다운
+    const items: MenuProps['items'] = [
+        {
+            key: '1',
+            label: (
+                <span style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                    <EditOutlinedIcon fontSize="small" />
+                    수정하기
+                </span>
+            ),
+            onClick: onClickEdit,
+        },
+
+        {
+            key: '2',
+            danger: true,
+            label: (
+                <span style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                    <DeleteOutlineOutlinedIcon fontSize="small" />
+                    삭제하기
+                </span>
+            ),
+            onClick: onClickDelete,
+        },
+    ];
 
     return (
         <>
@@ -121,12 +204,16 @@ export default function SolPlaceDetail() {
                     <div className={style.image_wrapper}>
                         {/* 이미지 없으면 기본 이미지 */}
                         {data?.fetchSolplaceLog.images.length === 0 ? (
-                            <div onClick={onclickFullScreen}>
+                            <div
+                                onClick={onclickFullScreen}
+                                style={{ position: 'relative', height: '100%' }}
+                            >
                                 <Image
                                     src={imgSrc.placeImage}
                                     alt="placeImage"
                                     fill
                                     style={{ objectFit: 'cover' }}
+                                    loading="eager"
                                 />
                             </div>
                         ) : (
@@ -135,7 +222,7 @@ export default function SolPlaceDetail() {
                                 pagination={{ type: 'fraction' }}
                                 navigation={true}
                                 modules={[Pagination]}
-                                loop={true}
+                                loop={(data?.fetchSolplaceLog.images.length ?? 0) > 1} // 슬라이드가 2개 이상일 때만 loop
                                 className="mySwiper"
                                 key={data?.fetchSolplaceLog.images?.length} // 데이터 바뀔 때 Swiper 재생성해서 페이지네이션 NaN 해결
                             >
@@ -150,6 +237,7 @@ export default function SolPlaceDetail() {
                                                 alt={`placeImage_${index}`}
                                                 fill
                                                 style={{ objectFit: 'cover' }}
+                                                loading="eager"
                                             />
                                         </div>
                                     </SwiperSlide>
@@ -164,25 +252,53 @@ export default function SolPlaceDetail() {
                                 <div className={style.address_title}>
                                     {data?.fetchSolplaceLog.title}
                                 </div>
-                                <Link
-                                    href={`/solplace-logs/${data?.fetchSolplaceLog.id}/edit`}
-                                    className={style.edit_img}
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        router.push(
-                                            `/solplace-logs/${data?.fetchSolplaceLog.id}/edit`
-                                        );
-                                    }}
-                                >
-                                    <Image src={imgSrc.edit} alt="수정하기" fill></Image>
-                                </Link>
+
+                                {accessToken && data?.fetchSolplaceLog.userId === loginUserId && (
+                                    <button className={style.btn_icon}>
+                                        <Dropdown menu={{ items }} trigger={['hover', 'click']}>
+                                            <a onClick={(e) => e.preventDefault()}>
+                                                <Space>
+                                                    {/* 더보기 */}
+                                                    <EllipsisOutlined
+                                                        style={{ fontSize: '20px' }}
+                                                    ></EllipsisOutlined>
+                                                </Space>
+                                            </a>
+                                        </Dropdown>
+                                    </button>
+                                )}
+
+                                {/* {data?.fetchSolplaceLog.userId === loginUserId && (
+                                    <Link
+                                        href={`/solplace-logs/${data?.fetchSolplaceLog.id}/edit`}
+                                        className={style.edit_img}
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            router.push(
+                                                `/solplace-logs/${data?.fetchSolplaceLog.id}/edit`,
+                                            );
+                                        }}
+                                    >
+                                        <Image
+                                            src={imgSrc.edit}
+                                            alt="수정하기"
+                                            fill
+                                            sizes="24px"
+                                        ></Image>
+                                    </Link>
+                                )} */}
                             </div>
                             {/* 주소 */}
                             {placeLat && placeLng && (
                                 <div>
                                     <div className={style.addressDetail_wrapper}>
                                         <div className={style.location_img}>
-                                            <Image src={imgSrc.location} alt="주소" fill></Image>
+                                            <Image
+                                                src={imgSrc.location}
+                                                alt="주소"
+                                                fill
+                                                sizes="16px"
+                                            ></Image>
                                         </div>
                                         <div className={style.addressDetail}>
                                             {data?.fetchSolplaceLog.address}
@@ -205,6 +321,7 @@ export default function SolPlaceDetail() {
                                                         }
                                                         alt={mapToggle ? '지도 접기' : '지도 보기'}
                                                         fill
+                                                        sizes="24px"
                                                     ></Image>
                                                 </div>
                                             </button>
@@ -241,7 +358,7 @@ export default function SolPlaceDetail() {
                 <div className={style.fullscreen_wrapper}>
                     {/* 닫기 버튼은 스케일 영향 받지 않게 하기 */}
                     <button className={style.imageClose_img} onClick={onclickClose}>
-                        <Image src={imgSrc.imageClose} alt="이미지 닫기" fill></Image>
+                        <Image src={imgSrc.imageClose} alt="이미지 닫기" fill sizes="24px"></Image>
                     </button>
                     {/* 페이지네이션은 Swiper 밖에 두기 */}
                     <div className="fullscreen_pagination" />

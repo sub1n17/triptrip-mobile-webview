@@ -1,16 +1,22 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import style from './styles.module.css';
 import { useDeviceSetting } from '@/src/commons/settings/device-setting/hook';
 
-declare const window: Window & {
-    kakao: any;
-};
+// declare const window: Window & {
+//     kakao: any;
+// };
 
-function MapBase({ address, placeLat, placeLng }) {
+interface MapBaseProps {
+    address?: string;
+    placeLat?: number;
+    placeLng?: number;
+}
+
+function MapBase({ address, placeLat, placeLng }: MapBaseProps) {
     const { fetchApp } = useDeviceSetting();
 
     // const mapRef = useRef(null);
@@ -26,11 +32,11 @@ function MapBase({ address, placeLat, placeLng }) {
         // 게시글 상세일 때, 조회된 위도경도 값 사용
         placeLat && placeLng
             ? { lat: Number(placeLat), lng: Number(placeLng) }
-            : lat && lng
-            ? // 작성/수정할 때, 샬로우라우팅 된 url의 위도경도 값 사용
-              { lat: Number(lat), lng: Number(lng) }
-            : // 위치 권한 거부 시, 서울시청 값 사용
-              { lat: 37.5662952, lng: 126.9779451 };
+            : lat && lng && Number(lat) !== 0 && Number(lng) !== 0
+              ? // 작성/수정할 때, 샬로우라우팅 된 url의 위도경도 값 사용
+                { lat: Number(lat), lng: Number(lng) }
+              : // 위치 권한 거부 시, 서울시청 값 사용
+                { lat: 37.5662952, lng: 126.9779451 };
 
     // 새 글 작성 시, 현재 위치로 지도 표시하기
     useEffect(() => {
@@ -41,7 +47,19 @@ function MapBase({ address, placeLat, placeLng }) {
 
         const fetchLocation = async () => {
             // 현재 위치 좌표값 가져오기
-            const result = await fetchApp({ query: 'fetchDeviceLocationForLatLngSet' });
+            const result = (await fetchApp({ query: 'fetchDeviceLocationForLatLngSet' })) as {
+                // result 타입
+                data: {
+                    fetchDeviceLocationForLatLngSet: {
+                        status: 'granted' | 'denied';
+                        lat?: number;
+                        lng?: number;
+                    };
+                };
+            };
+
+            if (!result?.data?.fetchDeviceLocationForLatLngSet) return;
+
             const status = result.data.fetchDeviceLocationForLatLngSet.status;
             const currentLat = result.data.fetchDeviceLocationForLatLngSet.lat;
             const currentLng = result.data.fetchDeviceLocationForLatLngSet.lng;
@@ -55,27 +73,94 @@ function MapBase({ address, placeLat, placeLng }) {
 
             const params = new URLSearchParams(searchParams.toString());
 
+            let nextLat: number;
+            let nextLng: number;
+
             // 위치 권한 허락 시, 현재 위치 보여주기
             if (
                 status === 'granted' &&
                 typeof currentLat === 'number' &&
-                typeof currentLng === 'number'
+                typeof currentLng === 'number' &&
+                currentLat !== 0 &&
+                currentLng !== 0
             ) {
+                nextLat = currentLat;
+                nextLng = currentLng;
+
                 // 현재 위치를 url에 넣기
-                params.set('lat', String(currentLat));
-                params.set('lng', String(currentLng));
+                // params.set('lat', String(currentLat));
+                // params.set('lng', String(currentLng));
 
                 // 카카오 SDK 로드 확인
-                if (!window.kakao || !window.kakao.maps) {
-                    router.replace(`?${params.toString()}`, { shallow: true });
-                    return;
-                }
+                // if (!window.kakao || !window.kakao.maps) {
+                //     router.replace(
+                //         `?${params.toString()}`,
+                //         // , { shallow: true }
+                //     );
+                //     return;
+                // }
 
                 // 지도 로드 완료 후, 현재 위치의 위도경도로 주소 역지오코딩
-                window.kakao.maps.load(() => {
+                // window.kakao.maps.load(() => {
+                //     const geocoder = new window.kakao.maps.services.Geocoder();
+
+                //     geocoder.coord2Address(currentLng, currentLat, (result, status) => {
+                //         if (status === window.kakao.maps.services.Status.OK) {
+                //             const addr =
+                //                 result[0].road_address?.address_name ||
+                //                 result[0].address.address_name;
+
+                //             params.set('address', addr);
+                //         }
+
+                //         params.delete('from');
+                //         router.replace(
+                //             `?${params.toString()}`,
+                //             // { shallow: true }
+                //         );
+                //     });
+                // });
+                // return;
+            } else if (status === 'denied') {
+                nextLat = 37.5668242; // 서울시청
+                nextLng = 126.9786465;
+
+                params.set('lat', String(nextLat));
+                params.set('lng', String(nextLng));
+                params.set('address', '서울특별시 중구 세종대로 110');
+
+                params.delete('from');
+                router.replace(`?${params.toString()}`);
+
+                return;
+
+                // 위치 권한 거부 시, 서울시청 보여주기
+                // params.set('lat', '37.5668242'); // 지도에서 서울시청 찍을때
+                // params.set('lng', '126.9786465');
+                // params.set('address', '서울특별시 중구 세종대로 110');
+            } else {
+                return; // 아직 좌표 안 온 상태
+            }
+
+            params.set('lat', String(nextLat));
+            params.set('lng', String(nextLng));
+
+            // 카카오 SDK 로드 확인 (지도 SDK 로드는 위치권한 허용/거부 상관없이 무조건 실행)
+            if (!window.kakao || !window.kakao.maps) {
+                router.replace(
+                    `?${params.toString()}`,
+                    // , { shallow: true }
+                );
+                return;
+            }
+
+            // 지도 로드 완료 후, 현재 위치의 위도경도로 주소 역지오코딩
+            window.kakao.maps.load(() => {
+                // 위치 권한 허용일 때만 주소 역지오코딩
+                if (status === 'granted') {
                     const geocoder = new window.kakao.maps.services.Geocoder();
 
-                    geocoder.coord2Address(currentLng, currentLat, (result, status) => {
+                    geocoder.coord2Address(nextLng, nextLat, (result, status) => {
                         if (status === window.kakao.maps.services.Status.OK) {
                             const addr =
                                 result[0].road_address?.address_name ||
@@ -85,25 +170,21 @@ function MapBase({ address, placeLat, placeLng }) {
                         }
 
                         params.delete('from');
-                        router.replace(`?${params.toString()}`, { shallow: true });
+                        router.replace(`?${params.toString()}`);
                     });
-                });
-                return;
-            } else if (status === 'denied') {
-                // 위치 권한 거부 시, 서울시청 보여주기
-                // params.set('lat', '37.5662952'); // 원래
-                // params.set('lng', '126.9779451');
-                // params.set('lat', '37.5665851'); // 위치 설정할 때 나온 주소
-                // params.set('lng', '126.9782038');
-                params.set('lat', '37.5668242'); // 지도에서 서울시청 찍을때
-                params.set('lng', '126.9786465');
-                params.set('address', '서울특별시 중구 세종대로 110');
-            } else {
-                return; // 아직 좌표 안 온 상태
-            }
+                } else {
+                    // 위치권한 거부일 때 서울 시청 주소
+                    params.set('address', '서울특별시 중구 세종대로 110');
+                    params.delete('from');
+                    router.replace(`?${params.toString()}`);
+                }
+            });
 
-            params.delete('from'); // 역할 끝났으니 제거
-            router.replace(`?${params.toString()}`, { shallow: true });
+            // params.delete('from'); // 역할 끝났으니 제거
+            // router.replace(
+            //     `?${params.toString()}`,
+            //     // { shallow: true }
+            // );
         };
         fetchLocation();
     }, []);
@@ -129,7 +210,10 @@ function MapBase({ address, placeLat, placeLng }) {
                     params.set('lng', String(newLoc.lng));
                     params.set('address', address);
 
-                    router.replace(`?${params.toString()}`, { shallow: true });
+                    router.replace(
+                        `?${params.toString()}`,
+                        // { shallow: true }
+                    );
                 }
             });
         });
@@ -170,7 +254,10 @@ function MapBase({ address, placeLat, placeLng }) {
                 params.set('lng', String(nextLng));
                 params.set('address', addr);
 
-                router.replace(`?${params.toString()}`, { shallow: true });
+                router.replace(
+                    `?${params.toString()}`,
+                    // { shallow: true }
+                );
             }
         });
     };
@@ -179,6 +266,7 @@ function MapBase({ address, placeLat, placeLng }) {
         <div className={style.mapWrapper}>
             <Map
                 // ref={mapRef}
+                // key={mapKey} // URL 바뀔 때 재마운트
                 center={initLocation} //지도의 중심을 이 좌표로 맞추기
                 level={3}
                 onIdle={onIdle}
@@ -193,10 +281,10 @@ function MapBase({ address, placeLat, placeLng }) {
     );
 }
 
-export function MapNew(props) {
+export function MapNew(props: MapBaseProps) {
     return <MapBase {...props} />;
 }
 
-export function MapEdit(props) {
+export function MapEdit(props: MapBaseProps) {
     return <MapBase {...props} />;
 }

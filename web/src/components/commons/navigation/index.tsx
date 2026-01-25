@@ -9,7 +9,11 @@ const imgSrc = {
     mypage: '/icons/nv_my.png',
 };
 
-export default function Navigation({ active }) {
+interface NavigationProps {
+    active?: 'isPlace' | 'isMypage';
+}
+
+export default function Navigation({ active }: NavigationProps) {
     const isPlace = active === 'isPlace';
     const isMypage = active === 'isMypage';
     return (
@@ -21,6 +25,7 @@ export default function Navigation({ active }) {
                         src={isPlace ? imgSrc.locationActive : imgSrc.location}
                         alt={isPlace ? '플레이스 활성' : '플레이스 비활성'}
                         fill
+                        sizes="24px"
                     ></Image>
                 </div>
                 <div className={isPlace ? style.navText_active : style.navText}>플레이스</div>
@@ -33,6 +38,7 @@ export default function Navigation({ active }) {
                         src={isMypage ? imgSrc.mypageActive : imgSrc.mypage}
                         alt={isMypage ? '마이페이지 비활성' : '마이페이지 활성'}
                         fill
+                        sizes="24px"
                     ></Image>
                 </div>
                 <div className={isMypage ? style.navText_active : style.navText}>내 설정</div>

@@ -68,7 +68,7 @@ export const useInitializeSignUp = () => {
         >
             <div className={style.title}>회원가입을 축하 드려요.</div>
             <div className={style.logo_img}>
-                <Image src={'/images/modalLogo.png'} alt="로고" fill></Image>
+                <Image src={'/images/modalLogo.png'} alt="로고" fill sizes="78px"></Image>
             </div>
 
             <Button className={style.loginBtn} onClick={onClickLogin}>

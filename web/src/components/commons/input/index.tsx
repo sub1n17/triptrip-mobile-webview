@@ -10,9 +10,19 @@ interface InputBaseProps {
     className?: string;
     value?: string;
     onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+    readOnly?: boolean;
+    // defaultValue?: string;
 }
 
-function InputBase({ placeholder, keyname, className, value, onChange }: InputBaseProps) {
+function InputBase({
+    placeholder,
+    keyname,
+    className,
+    value,
+    onChange,
+    readOnly,
+    // defaultValue,
+}: InputBaseProps) {
     // const { register, formState } = useFormContext();
     // const error = formState.errors?.[rest.keyname]?.message?.toString();
 
@@ -34,7 +44,7 @@ function InputBase({ placeholder, keyname, className, value, onChange }: InputBa
                     onChange={onChange}
                 />
             ) : (
-                <input type="text" className={className} value={value} readOnly></input>
+                <input type="text" className={className} value={value} readOnly={readOnly}></input>
             )}
 
             {error && <div className={style.error_txt}>{error}</div>}

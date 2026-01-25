@@ -24,6 +24,7 @@ const FETCH_PLACE = gql`
             lat
             lng
             images
+            userId
         }
     }
 `;
@@ -84,7 +85,7 @@ export const useInitializeEdit = () => {
                 files.map(async (el) => {
                     const result = await uploadFile({ variables: { file: el } });
                     return result.data.uploadFile.url;
-                })
+                }),
             );
 
             // 기존 이미지와 새로 추가한 이미지 같이 보여주기

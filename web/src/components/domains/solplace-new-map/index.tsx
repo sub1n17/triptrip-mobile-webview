@@ -5,14 +5,19 @@ import { useSearchParams } from 'next/navigation';
 
 import { ButtonFull } from '../../commons/button';
 import { InputRound } from '../../commons/input';
-import { MapNew } from '../../commons/map';
+// import { MapNew } from '../../commons/map';
 import style from './styles.module.css';
+
+import dynamic from 'next/dynamic';
+const MapNew = dynamic(() => import('../../commons/map').then((mod) => mod.MapNew), {
+    ssr: false,
+});
 
 export default function SolPlaceNewMap() {
     const searchParams = useSearchParams();
 
     // URL에 값 있으면 그걸 우선 사용
-    const address = searchParams.get('address') || '';
+    const address = searchParams.get('address') || '서울특별시 중구 세종대로 110';
     const lat = searchParams.get('lat') ?? '';
     const lng = searchParams.get('lng') ?? '';
 
@@ -28,7 +33,11 @@ export default function SolPlaceNewMap() {
 
             <div className={style.flexWrapper}>
                 <div>
-                    <InputRound value={address} readOnly />
+                    <InputRound
+                        // defaultValue={address}
+                        value={address}
+                        readOnly
+                    />
                 </div>
 
                 <Link
@@ -36,10 +45,10 @@ export default function SolPlaceNewMap() {
                     href={
                         from === 'edit'
                             ? `/solplace-logs/${id}/edit?lat=${lat}&lng=${lng}&address=${encodeURIComponent(
-                                  address
+                                  address,
                               )}`
                             : `/solplace-logs/new?lat=${lat}&lng=${lng}&address=${encodeURIComponent(
-                                  address
+                                  address,
                               )}`
                     }
                 >

@@ -4,6 +4,26 @@ import { Toggle } from '../../commons/toggle';
 import { useEffect, useState } from 'react';
 import Footer from '@/src/commons/layout/footer/footer';
 
+interface DeviceResponse<T> {
+    data: T;
+}
+interface AppStateResponse {
+    fetchDeviceSystemForAppStateSet: {
+        isForeground: boolean;
+    };
+}
+interface PermissionResponse {
+    status: 'granted' | 'denied' | 'prompt';
+}
+
+interface LocationPermissionResponse {
+    fetchDeviceLocationForPermissionSet: PermissionResponse;
+}
+
+interface NotificationPermissionResponse {
+    fetchDeviceNotificationForPermissionSet: PermissionResponse;
+}
+
 export default function MyPage() {
     const { fetchApp } = useDeviceSetting();
 
@@ -20,14 +40,18 @@ export default function MyPage() {
 
         const interval = setInterval(async () => {
             // 앱 상태 감지 요청
-            const appStatus = await fetchApp({ query: 'fetchDeviceSystemForAppStateSet' });
+            const appStatus = (await fetchApp({
+                query: 'fetchDeviceSystemForAppStateSet',
+            })) as DeviceResponse<AppStateResponse>;
 
             // 앱 상태가 포그라운드일 때 실행
             const isForeground = appStatus.data.fetchDeviceSystemForAppStateSet.isForeground;
             if (!isForeground) return;
 
             // 위치 권한 조회
-            const permission = await fetchApp({ query: 'fetchDeviceLocationForPermissionSet' });
+            const permission = (await fetchApp({
+                query: 'fetchDeviceLocationForPermissionSet',
+            })) as DeviceResponse<LocationPermissionResponse>;
             const permissionStatus = permission.data.fetchDeviceLocationForPermissionSet.status;
 
             if (permissionStatus === 'granted') {
@@ -62,14 +86,18 @@ export default function MyPage() {
 
         const interval = setInterval(async () => {
             // 앱 상태 감지 요청
-            const appStatus = await fetchApp({ query: 'fetchDeviceSystemForAppStateSet' });
+            const appStatus = (await fetchApp({
+                query: 'fetchDeviceSystemForAppStateSet',
+            })) as DeviceResponse<AppStateResponse>;
 
             // 앱 상태가 포그라운드일 때 실행
             const isForeground = appStatus.data.fetchDeviceSystemForAppStateSet.isForeground;
             if (!isForeground) return;
 
             // 알림 권한 조회
-            const permission = await fetchApp({ query: 'fetchDeviceNotificationForPermissionSet' });
+            const permission = (await fetchApp({
+                query: 'fetchDeviceNotificationForPermissionSet',
+            })) as DeviceResponse<NotificationPermissionResponse>;
             const permissionStatus = permission.data.fetchDeviceNotificationForPermissionSet.status;
 
             if (permissionStatus === 'granted') {
@@ -101,16 +129,18 @@ export default function MyPage() {
     useEffect(() => {
         const fetchInitialPermissions = async () => {
             // 위치 권한 조회
-            const locationPermission = await fetchApp({
+            const locationPermission = (await fetchApp({
                 query: 'fetchDeviceLocationForPermissionSet',
-            });
+            })) as DeviceResponse<LocationPermissionResponse>;
+
             const locationStatus =
                 locationPermission.data.fetchDeviceLocationForPermissionSet.status;
 
             // 알람 권한 조회
-            const notificationPermission = await fetchApp({
+            const notificationPermission = (await fetchApp({
                 query: 'fetchDeviceNotificationForPermissionSet',
-            });
+            })) as DeviceResponse<NotificationPermissionResponse>;
+
             const notificationStatus =
                 notificationPermission.data.fetchDeviceNotificationForPermissionSet.status;
 

@@ -9,6 +9,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { ButtonCircle } from '../../commons/button';
 import { gql, useQuery } from '@apollo/client';
 import { useSolPlaceNewStore } from '@/src/commons/stores/solplaceNew-store';
+import { FetchSolplaceLogsDocument } from '@/src/commons/graphql/graphql';
 
 const imgSrc = {
     location: '/icons/location.png',
@@ -31,12 +32,11 @@ const FETCH_PLACES = gql`
         }
     }
 `;
-
-export default function SolPlaceList({ isPlace }) {
+export default function SolPlaceList() {
     const { onRouterPush } = useRoutingSetting();
 
     // 게시글 조회
-    const { data, fetchMore, refetch } = useQuery(FETCH_PLACES, {
+    const { data, fetchMore, refetch } = useQuery(FetchSolplaceLogsDocument, {
         variables: { page: 1 },
     });
 
@@ -113,6 +113,8 @@ export default function SolPlaceList({ isPlace }) {
                                         alt="img"
                                         fill
                                         style={{ objectFit: 'cover' }}
+                                        sizes="9.375rem"
+                                        priority={index === 0} // 첫 번째 이미지에만 priority
                                     />
                                 </div>
                                 <div>
@@ -136,7 +138,12 @@ export default function SolPlaceList({ isPlace }) {
                                 {el.address && (
                                     <div className={style.location_wrapper}>
                                         <div className={style.location_img}>
-                                            <Image src={imgSrc.location} alt="location" fill />
+                                            <Image
+                                                src={imgSrc.location}
+                                                alt="location"
+                                                fill
+                                                sizes="16px"
+                                            />
                                         </div>
                                         <div className={style.address}>
                                             {el.address.split(' ').slice(0, 2).join(' ')}

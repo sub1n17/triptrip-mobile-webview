@@ -13,6 +13,7 @@ import { getAccessToken } from '../../libraries/get-access-token';
 import { useAccessTokenStore } from '../../stores/token-store';
 import { setContext } from '@apollo/client/link/context';
 import { createUploadLink } from 'apollo-upload-client';
+import { useEffect } from 'react';
 
 interface IApolloSetting {
     children: React.ReactNode;
@@ -20,6 +21,14 @@ interface IApolloSetting {
 
 export default function ApolloSetting(props: IApolloSetting) {
     const { setAccessToken } = useAccessTokenStore();
+
+    // 상세페이지에서 수정/삭제 버튼 작성자만 보이게 하기 위해 로컬스토리지에 저장 (fetchLoggedIn 쿼리 없어서 대체)
+    useEffect(() => {
+        const token = localStorage.getItem('accessToken');
+        if (token) {
+            setAccessToken(token);
+        }
+    }, []);
 
     const errorLink = onError(({ graphQLErrors, operation, forward }) => {
         // 에러 캐치하기
@@ -42,7 +51,7 @@ export default function ApolloSetting(props: IApolloSetting) {
                                 // credentials: 'include',
                             });
                             return newAccessToken;
-                        })
+                        }),
                     ).flatMap(() => forward(operation)); // 실패한 쿼리를 다시 실행
                 }
             }

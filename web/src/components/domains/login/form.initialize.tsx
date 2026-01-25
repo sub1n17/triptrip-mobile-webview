@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { LogInSchemaType } from './schema';
 import { ApolloError, gql, useMutation } from '@apollo/client';
 import { useEffect, useState } from 'react';
-import { Modal } from 'antd';
+import { message, Modal } from 'antd';
 import { getAccessToken } from '@/src/commons/libraries/get-access-token';
 import { useAccessTokenStore } from '@/src/commons/stores/token-store';
 
@@ -25,6 +25,14 @@ const LOG_IN = gql`
     }
 `;
 
+type FetchDeviceAuthResult = {
+    data: {
+        fetchDeviceAuthForRefreshTokenSet: {
+            refreshToken: string;
+        };
+    };
+};
+
 export const useInitializeLogIn = () => {
     const { fetchApp } = useDeviceSetting();
     const router = useRouter();
@@ -38,11 +46,16 @@ export const useInitializeLogIn = () => {
     useEffect(() => {
         const checkToken = async () => {
             // 리프레시토큰 조회
-            const result = await fetchApp({ query: 'fetchDeviceAuthForRefreshTokenSet' });
+
+            const result = (await fetchApp({
+                query: 'fetchDeviceAuthForRefreshTokenSet',
+            })) as FetchDeviceAuthResult;
+
+            if (!result || !result.data) return;
             const refreshToken = result.data.fetchDeviceAuthForRefreshTokenSet.refreshToken;
 
-            // 리프레시 토큰이 유효하면 액세스토큰을 재발급 받고 솔플레이스로 이동하기
             if (refreshToken) {
+                // 리프레시 토큰이 유효하면 액세스토큰을 재발급 받고 솔플레이스로 이동하기
                 // 백엔드에 액세스토큰 재발급 요청하기
                 const result = await restore_accessToken();
                 const accessToken = result.data.restoreAccessToken.accessToken;
@@ -80,6 +93,8 @@ export const useInitializeLogIn = () => {
             // zustand에 accessToken 저장
             if (accessToken) {
                 setAccessToken(accessToken);
+                localStorage.setItem('accessToken', accessToken);
+                // ㄴ> 상세페이지에서 수정/삭제 버튼 작성자만 보이게 하기 위해 로컬스토리지에 저장 (fetchLoggedIn 쿼리 없어서 대체)
             }
 
             // RN에 accessToken, refreshToken 저장 API 요청하기
@@ -97,13 +112,7 @@ export const useInitializeLogIn = () => {
             router.push('/solplace-logs');
         } catch (error) {
             if (error instanceof ApolloError) {
-                Modal.error({
-                    centered: true,
-                    title: '로그인 실패',
-                    content: error.graphQLErrors?.[0]?.message ?? '잠시 후 다시 시도해주세요.',
-                    width: '20rem',
-                });
-                return;
+                message.error(error.graphQLErrors?.[0]?.message ?? '잠시 후 다시 시도해주세요.');
             }
         }
     };

@@ -59,10 +59,12 @@
     font-size: 0.813rem;
     font-weight: 600;
     margin-top: 0.75rem;
+
 }
 
 .addressDetail {
     color: #777777;
+    line-height: 1;
 }
 
 .map_txt {

@@ -17,14 +17,14 @@ function ButtonBase({ text, onClick, className, children }: IButtonBaseProps) {
     );
 }
 
-export function ButtonFull(props) {
+export function ButtonFull(props: IButtonBaseProps) {
     return <ButtonBase {...props} className={style.button_normal}></ButtonBase>;
 }
 
-export function ButtonSmall(props) {
+export function ButtonSmall(props: IButtonBaseProps) {
     return <ButtonBase {...props}></ButtonBase>;
 }
 
-export function ButtonCircle(props) {
+export function ButtonCircle(props: IButtonBaseProps) {
     return <ButtonBase {...props} className={style.button_circle}></ButtonBase>;
 }

@@ -1,11 +1,16 @@
 'use client';
 
 import Link from 'next/link';
-import { MapEdit } from '../../commons/map';
+// import { MapEdit } from '../../commons/map';
 import { InputRound } from '../../commons/input';
 import style from '../solplace-new-map/styles.module.css';
 import { useSearchParams } from 'next/navigation';
 import { ButtonFull } from '../../commons/button';
+
+import dynamic from 'next/dynamic';
+const MapEdit = dynamic(() => import('../../commons/map').then((mod) => mod.MapEdit), {
+    ssr: false,
+});
 
 export default function SolPlaceDetailEditMap() {
     const searchParams = useSearchParams();
@@ -30,7 +35,7 @@ export default function SolPlaceDetailEditMap() {
                 <Link
                     replace
                     href={`/solplace-logs/${id}/edit?lat=${lat}&lng=${lng}&address=${encodeURIComponent(
-                        address
+                        address,
                     )}`}
                     shallow
                 >

@@ -28,7 +28,7 @@ function LinkBase({ linkText, href, placeAddress, replace }: LinkBaseProps) {
             >
                 <div className={style.address_txt}>{placeAddress ? placeAddress : linkText}</div>
                 <div className={style.icon_right}>
-                    <Image src={imgSrc.arr_right} alt="arr_right" fill></Image>
+                    <Image src={imgSrc.arr_right} alt="arr_right" fill sizes="24px"></Image>
                 </div>
             </Link>
         </>
