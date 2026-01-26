@@ -6,6 +6,13 @@
     border-bottom: 1px solid #F2F2F2;
 }
 
+/* 권한 조회하면서 로딩 중일 때 약간 투명하게 처리 */
+.toggle_wrapper.loading {
+    opacity: 0.6;
+    pointer-events: none;
+    cursor: default;
+}
+
 .toggle_wrapper:last-of-type {
     border: none;
 }
@@ -48,4 +55,9 @@
 
 .check_box:checked::after {
     transform: translateX(calc(100% - 2px - 2px));
+}
+
+/* 로딩 중일 때 체크박스 배경색을 좀 더 연하게 고정 */
+.toggle_wrapper.loading .check_box {
+    background-color: #f0f0f0;
 }

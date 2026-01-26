@@ -43,6 +43,9 @@ export default function SolPlaceList() {
     const [page, setPage] = useState(1);
     const list = data?.fetchSolplaceLogs ?? [];
 
+    // hasMore={true} 하면 리스트가 0개여도 아직 로딩할 게 있다고 판단돼서 loader를 보여줌 -> state로 관리
+    const [hasMore, setHasMore] = useState(true);
+
     // 무한 스크롤
     const onNext = () => {
         fetchMore({
@@ -51,7 +54,10 @@ export default function SolPlaceList() {
             },
             updateQuery: (prev, { fetchMoreResult }) => {
                 // 더 이상 불러올 데이터 없으면 이전 값으로 두기
-                if (!fetchMoreResult.fetchSolplaceLogs.length) return prev;
+                if (!fetchMoreResult.fetchSolplaceLogs.length) {
+                    setHasMore(false);
+                    return prev;
+                }
 
                 // 데이터가 더 있으면 페이지 업데이트
                 setPage((prev) => prev + 1);
@@ -79,9 +85,10 @@ export default function SolPlaceList() {
         <>
             <main className={style.place_wrapper}>
                 <InfiniteScroll
-                    hasMore={true}
+                    hasMore={hasMore}
                     next={onNext}
-                    loader={<div>로딩중</div>}
+                    loader={null}
+                    // loader={list.length > 0 ? <div>로딩중</div> : ''}
                     dataLength={list.length}
                     // pull-to-refresh 새로고침
                     pullDownToRefresh={true}
@@ -89,39 +96,53 @@ export default function SolPlaceList() {
                     pullDownToRefreshThreshold={100}
                 >
                     <div className={style.place_list}>
-                        {list.map((el, index) => (
-                            <Link
-                                href={`/solplace-logs/${el.id}`}
-                                key={`${el}_${index}`}
-                                className={style.list_wrapper}
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    onRouterPush(`/solplace-logs/${el.id}`);
-                                }}
-                            >
-                                <div className={style.place_img}>
-                                    <Image
-                                        src={
-                                            // el.images?.[0]
-                                            Array.isArray(el.images) &&
-                                            el.images.length > 0 &&
-                                            typeof el.images[0] === 'string' &&
-                                            el.images[0].trim() !== ''
-                                                ? `https://storage.googleapis.com/${el.images[0]}`
-                                                : imgSrc.defaultPlaceImg
-                                        }
-                                        alt="img"
-                                        fill
-                                        style={{ objectFit: 'cover' }}
-                                        sizes="9.375rem"
-                                        priority={index === 0} // 첫 번째 이미지에만 priority
-                                    />
-                                </div>
-                                <div>
-                                    <div className={style.title}>{el.title} </div>
-                                    <div className={style.contents}>{el.contents} </div>
-                                </div>
-                                {/* {el.addressCity && (
+                        {list.map((el, index) => {
+                            const imageSrc =
+                                typeof el.images?.[0] === 'string' && el.images[0].trim() !== ''
+                                    ? el.images[0].startsWith('http')
+                                        ? el.images[0]
+                                        : `https://storage.googleapis.com/${el.images[0]}`
+                                    : imgSrc.defaultPlaceImg;
+                            return (
+                                <Link
+                                    href={`/solplace-logs/${el.id}`}
+                                    key={`${el}_${index}`}
+                                    className={style.list_wrapper}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        onRouterPush(`/solplace-logs/${el.id}`);
+                                    }}
+                                >
+                                    <div className={style.place_img}>
+                                        {/* eslint-disable @next/next/no-img-element */}
+                                        <img
+                                            src={imageSrc}
+                                            alt="플레이스"
+                                            style={{
+                                                width: '100%',
+                                                height: '100%',
+                                                objectFit: 'cover',
+                                            }}
+                                            onError={(e) => {
+                                                e.currentTarget.src = '/images/defaultPlaceImg.jpg';
+                                            }}
+                                        />
+                                        {/* ㄴ> 사진 파일이 이상한 게시글이 있는데 next/image는 조금이라도 이상하면 reject 시켜서 엄격한데 img는 그냥 브라우저가 대충 렌더링 시도해서 깨진 이미지 자동 fallback시킴 -> 손상된 이미지가 안전함 */}
+
+                                        {/* <Image
+                                            src={imageSrc}
+                                            alt="img"
+                                            fill
+                                            style={{ objectFit: 'cover' }}
+                                            sizes="9.375rem"
+                                            priority={index === 0} // 첫 번째 이미지에만 priority
+                                        /> */}
+                                    </div>
+                                    <div>
+                                        <div className={style.title}>{el.title} </div>
+                                        <div className={style.contents}>{el.contents} </div>
+                                    </div>
+                                    {/* {el.addressCity && (
                                     <div className={style.location_wrapper}>
                                         <div className={style.location_img}>
                                             <Image
@@ -135,25 +156,29 @@ export default function SolPlaceList() {
                                         </div>
                                     </div>
                                 )} */}
-                                {el.address && (
-                                    <div className={style.location_wrapper}>
-                                        <div className={style.location_img}>
-                                            <Image
-                                                src={imgSrc.location}
-                                                alt="location"
-                                                fill
-                                                sizes="16px"
-                                            />
+                                    {el.address && (
+                                        <div className={style.location_wrapper}>
+                                            <div className={style.location_img}>
+                                                <Image
+                                                    src={imgSrc.location}
+                                                    alt="location"
+                                                    fill
+                                                    sizes="16px"
+                                                />
+                                            </div>
+                                            <div className={style.address}>
+                                                {el.address.split(' ').slice(0, 2).join(' ')}
+                                            </div>
                                         </div>
-                                        <div className={style.address}>
-                                            {el.address.split(' ').slice(0, 2).join(' ')}
-                                        </div>
-                                    </div>
-                                )}
-                            </Link>
-                        ))}
+                                    )}
+                                </Link>
+                            );
+                        })}
                     </div>
                 </InfiniteScroll>
+                {!(hasMore && list.length > 0) && (
+                    <div className={style.list_end}>마지막 플레이스입니다.</div>
+                )}
                 <Link
                     href={'/solplace-logs/new'}
                     onClick={() => setIsFirstNew(true)}

@@ -11,7 +11,7 @@ interface InputBaseProps {
     value?: string;
     onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
     readOnly?: boolean;
-    // defaultValue?: string;
+    type?: string;
 }
 
 function InputBase({
@@ -21,7 +21,7 @@ function InputBase({
     value,
     onChange,
     readOnly,
-    // defaultValue,
+    type,
 }: InputBaseProps) {
     // const { register, formState } = useFormContext();
     // const error = formState.errors?.[rest.keyname]?.message?.toString();
@@ -34,7 +34,7 @@ function InputBase({
 
     return (
         <>
-            {formContext && keyname ? (
+            {/* {formContext && keyname ? (
                 <input
                     type="text"
                     placeholder={placeholder}
@@ -45,7 +45,17 @@ function InputBase({
                 />
             ) : (
                 <input type="text" className={className} value={value} readOnly={readOnly}></input>
-            )}
+            )}  */}
+
+            <input
+                type={!type ? 'text' : 'password'}
+                placeholder={placeholder}
+                {...(formContext && keyname ? register(keyname) : {})}
+                className={className}
+                value={value}
+                onChange={onChange}
+                readOnly={!formContext || !keyname ? readOnly : false}
+            />
 
             {error && <div className={style.error_txt}>{error}</div>}
         </>

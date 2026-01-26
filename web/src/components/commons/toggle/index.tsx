@@ -5,11 +5,12 @@ interface ToggleProps {
     permissions: boolean;
     id: string;
     onClick?: () => void;
+    isLoading?: boolean;
 }
 
-export const Toggle = ({ title, onClick, permissions, id }: ToggleProps) => {
+export const Toggle = ({ title, onClick, permissions, id, isLoading }: ToggleProps) => {
     return (
-        <div className={style.toggle_wrapper}>
+        <div className={`${style.toggle_wrapper} ${isLoading ? style.loading : ''}`}>
             <div className={style.toggle_title}>{title}</div>
             <label htmlFor={id} className={style.toggle_btn} onClick={onClick}>
                 <input

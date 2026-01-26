@@ -175,7 +175,14 @@ export default function SolPlaceDetail() {
         {
             key: '1',
             label: (
-                <span style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                <span
+                    style={{
+                        display: 'flex',
+                        gap: 8,
+                        alignItems: 'center',
+                        paddingBlock: '0.4rem',
+                    }}
+                >
                     <EditOutlinedIcon fontSize="small" />
                     수정하기
                 </span>
@@ -187,7 +194,14 @@ export default function SolPlaceDetail() {
             key: '2',
             danger: true,
             label: (
-                <span style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                <span
+                    style={{
+                        display: 'flex',
+                        gap: 8,
+                        alignItems: 'center',
+                        paddingBlock: '0.4rem',
+                    }}
+                >
                     <DeleteOutlineOutlinedIcon fontSize="small" />
                     삭제하기
                 </span>
@@ -208,13 +222,26 @@ export default function SolPlaceDetail() {
                                 onClick={onclickFullScreen}
                                 style={{ position: 'relative', height: '100%' }}
                             >
-                                <Image
+                                {/* eslint-disable @next/next/no-img-element */}
+                                <img
+                                    src={'/images/defaultPlaceImg.jpg'}
+                                    alt="플레이스"
+                                    style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        objectFit: 'cover',
+                                    }}
+                                    onError={(e) => {
+                                        e.currentTarget.src = '/images/defaultPlaceImg.jpg';
+                                    }}
+                                />
+                                {/* <Image
                                     src={imgSrc.placeImage}
                                     alt="placeImage"
                                     fill
                                     style={{ objectFit: 'cover' }}
                                     loading="eager"
-                                />
+                                /> */}
                             </div>
                         ) : (
                             // 이미지 있을 때
@@ -232,13 +259,27 @@ export default function SolPlaceDetail() {
                                             className={style.image_inner}
                                             onClick={onclickFullScreen}
                                         >
-                                            <Image
+                                            <img
+                                                src={`https://storage.googleapis.com/${el}`}
+                                                alt="플레이스"
+                                                style={{
+                                                    width: '100%',
+                                                    height: '100%',
+                                                    objectFit: 'cover',
+                                                }}
+                                                onError={(e) => {
+                                                    e.currentTarget.src =
+                                                        '/images/defaultPlaceImg.jpg';
+                                                }}
+                                            />
+
+                                            {/* <Image
                                                 src={`https://storage.googleapis.com/${el}`}
                                                 alt={`placeImage_${index}`}
                                                 fill
                                                 style={{ objectFit: 'cover' }}
                                                 loading="eager"
-                                            />
+                                            /> */}
                                         </div>
                                     </SwiperSlide>
                                 ))}
@@ -255,7 +296,7 @@ export default function SolPlaceDetail() {
 
                                 {accessToken && data?.fetchSolplaceLog.userId === loginUserId && (
                                     <button className={style.btn_icon}>
-                                        <Dropdown menu={{ items }} trigger={['hover', 'click']}>
+                                        <Dropdown menu={{ items }} trigger={['click']}>
                                             <a onClick={(e) => e.preventDefault()}>
                                                 <Space>
                                                     {/* 더보기 */}
@@ -377,14 +418,28 @@ export default function SolPlaceDetail() {
                                     setScale((prev) => (prev === 1 ? 2 : 1));
                                 }}
                             >
-                                <Image
+                                {/* eslint-disable @next/next/no-img-element */}
+                                <img
+                                    src={'/images/defaultPlaceImg.jpg'}
+                                    alt="플레이스"
+                                    style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        objectFit: 'cover',
+                                    }}
+                                    onError={(e) => {
+                                        e.currentTarget.src = '/images/defaultPlaceImg.jpg';
+                                    }}
+                                />
+
+                                {/* <Image
                                     src={imgSrc.placeImage}
                                     alt="이미지"
                                     fill
                                     sizes="100vw"
                                     style={{ objectFit: 'contain' }}
                                     unoptimized
-                                ></Image>
+                                ></Image> */}
                             </div>
                         ) : (
                             // 이미지 있을 때
@@ -393,7 +448,7 @@ export default function SolPlaceDetail() {
                                     pagination={{ type: 'fraction', el: '.fullscreen_pagination' }} // 외부 DOM으로 페이지네이션 지정
                                     navigation={true}
                                     modules={[Pagination, Zoom]}
-                                    loop={true}
+                                    loop={(data?.fetchSolplaceLog.images?.length ?? 0) > 1}
                                     className="full_Image"
                                     key={data?.fetchSolplaceLog.images?.length} // 데이터 바뀔 때 Swiper 재생성해서 페이지네이션 NaN 해결
                                     zoom={{
@@ -406,12 +461,25 @@ export default function SolPlaceDetail() {
                                         <SwiperSlide key={`${el}_${index}`}>
                                             <div className="swiper-zoom-container">
                                                 <div className={style.placeImage_img}>
-                                                    <Image
+                                                    <img
+                                                        src={`https://storage.googleapis.com/${el}`}
+                                                        alt="플레이스"
+                                                        style={{
+                                                            width: '100%',
+                                                            height: '100%',
+                                                            objectFit: 'contain',
+                                                        }}
+                                                        onError={(e) => {
+                                                            e.currentTarget.src =
+                                                                '/images/defaultPlaceImg.jpg';
+                                                        }}
+                                                    />
+                                                    {/* <Image
                                                         src={`https://storage.googleapis.com/${el}`}
                                                         alt={`placeImage_${index}`}
                                                         fill
                                                         style={{ objectFit: 'contain' }}
-                                                    />
+                                                    /> */}
                                                 </div>
                                             </div>
                                         </SwiperSlide>

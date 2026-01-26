@@ -109,7 +109,7 @@ export const useInitializeLogIn = () => {
             });
 
             // 솔플레이스로그 페이지로 이동
-            router.push('/solplace-logs');
+            router.replace('/solplace-logs');
         } catch (error) {
             if (error instanceof ApolloError) {
                 message.error(error.graphQLErrors?.[0]?.message ?? '잠시 후 다시 시도해주세요.');

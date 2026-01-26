@@ -40,6 +40,7 @@ export default function LogIn() {
                     <InputNormal
                         placeholder={'비밀번호를 입력해 주세요.'}
                         keyname={'password'}
+                        type="password"
                     ></InputNormal>
                 </div>
 

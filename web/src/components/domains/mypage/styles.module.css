@@ -1,0 +1,10 @@
+.mypage {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.mypage_inner {
+    flex-direction: 1;
+    /* 네비 빼고 남은 공간 다 차지하기 */
+}

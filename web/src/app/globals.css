@@ -19,19 +19,24 @@
     }
 }
 
+html {
+    font-size: 16px;
+    /* 기준을 16px로 강제 고정 */
+}
+
 body {
     background: var(--background);
     color: var(--foreground);
     font-family: Arial, Helvetica, sans-serif;
 }
 
-.layout-padding {
+/* .layout-padding {
     padding-inline: 1.25rem;
-}
+} */
 
 html {
     /*  360 : 16 = 100vw : x */
-    font-size: calc((40 / 9) * 1vw);
+    /* font-size: calc((40 / 9) * 1vw); */
 }
 
 /* 페이지 이동하기 뷰트랜지션 */

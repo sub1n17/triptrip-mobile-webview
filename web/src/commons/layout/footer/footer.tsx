@@ -13,14 +13,12 @@ export default function Footer({ text, isLogin, navActive }: IFooterProps) {
     return (
         <>
             <div className={style.footer_layer}></div>
-
             {/* 기본 버튼 */}
             {!navActive && !isLogin && (
                 <div>
                     <ButtonFull text={text}></ButtonFull>
                 </div>
             )}
-
             {/* 로그인 */}
             {!navActive && isLogin && (
                 <div>
@@ -30,7 +28,6 @@ export default function Footer({ text, isLogin, navActive }: IFooterProps) {
                     </Link>
                 </div>
             )}
-
             {/* 네비게이션 */}
             {navActive && (
                 <div className={style.isPlace_footer}>

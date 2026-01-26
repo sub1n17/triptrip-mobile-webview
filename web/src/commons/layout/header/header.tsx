@@ -37,7 +37,13 @@ const HeaderBase = ({ title, hasLogo, hasBack, isTransParent }: IHeaderBaseProps
 
                 {hasBack && (
                     <div className={style.backBtn_img} onClick={onRouterBack}>
-                        <Image src={imgSrc.backBtn} alt="backBtn" fill sizes="24px"></Image>
+                        <Image
+                            src={imgSrc.backBtn}
+                            alt="backBtn"
+                            fill
+                            sizes="24px"
+                            loading="eager"
+                        ></Image>
                     </div>
                 )}
 

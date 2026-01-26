@@ -2,7 +2,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(9.375rem, 1fr));
     gap: 1.25rem 1rem;
-    padding-bottom: 3.5rem;
+    /* padding-bottom: 3.5rem; */
     /* ㄴ> 네비게이션 높이값만큼 패딩값 주기 */
 }
 
@@ -13,11 +13,12 @@
 }
 
 .place_img {
-    width: 9.375rem;
-    height: 12.5rem;
+
     position: relative;
     border-radius: 0.5rem;
     overflow: hidden;
+    aspect-ratio: 152 / 200;
+    width: 100%;
 }
 
 .title {
@@ -60,14 +61,20 @@
 }
 
 .add_place {
-    position: fixed;
-    bottom: calc(1.5rem + 3.5rem);
-    /* ㄴ> 바텀내비 때문에 padding-bottom 속성 줬으니까 그만큼 더하기 */
-    right: 1.25rem;
-    /* ㄴ> 레이아웃 전체 padding-inline 1.25rem */
+    position: sticky;
+    bottom: 5rem;
+    display: flex;
+    justify-content: end;
 }
 
 .place_wrapper {
     position: relative;
     min-height: 100vh;
+}
+
+.list_end {
+    padding: 2rem 0 0;
+    text-align: center;
+    font-size: 0.875rem;
+    color: #999;
 }

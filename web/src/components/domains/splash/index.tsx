@@ -30,7 +30,12 @@ export default function Splash() {
                     marginInline: '-1.25rem',
                 }}
             >
-                <Image src={'/images/splash1.png'} alt="트립트립" fill></Image>
+                <Image
+                    src={'/images/splash1.png'}
+                    alt="트립트립"
+                    fill
+                    style={{ objectFit: 'cover' }}
+                ></Image>
             </div>
         </>
     );

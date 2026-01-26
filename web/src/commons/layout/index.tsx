@@ -12,7 +12,8 @@ export default function Layout({ children }: ILayoutProps) {
                 <HeaderGlobal></HeaderGlobal>
                 <HeaderLocal></HeaderLocal>
                 <div
-                // style={{ display: 'flex', flexDirection: 'column', flex: 1 }}
+                    className={style.page_container}
+                    // style={{ display: 'flex', flexDirection: 'column', flex: 1 }}
                 >
                     {children}
                 </div>

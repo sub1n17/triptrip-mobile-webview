@@ -86,7 +86,7 @@ export const useInitializeNew = () => {
             });
 
             message.success('게시글이 등록되었습니다.');
-            router.push(`/solplace-logs`);
+            router.replace(`/solplace-logs/${result.data?.createSolplaceLog?.id}`);
 
             // 등록 완료 시, 알람 권한 요청
             await fetchApp({ query: 'requestDeviceNotificationsForPermissionSolplaceLogNewSet' });

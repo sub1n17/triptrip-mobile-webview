@@ -15,8 +15,8 @@
     flex-direction: column;
     gap: 20px;
     /* min-height: 100vh; */
-    min-height: calc(100vh - 2.5rem - 40px);
-    /* ㄴ> padding-bottom, gap만큼 빼기*/
+    min-height: calc(100vh - 80px);
+    /* ㄴ> padding-bottom, gap만큼 빼기 */
     padding-bottom: 2.5rem;
 }
 

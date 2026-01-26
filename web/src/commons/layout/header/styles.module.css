@@ -11,13 +11,17 @@
 }
 
 .header {
-    width: 100vw;
     height: 3rem;
     display: flex;
     gap: 0.5rem;
     align-items: center;
     position: fixed;
     z-index: 100;
+    width: 100%;
+    max-width: 430px;
+    padding: 0 1.25rem;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .header_layer {

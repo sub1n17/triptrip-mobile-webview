@@ -2,4 +2,24 @@
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    /* 웹에서도 모바일처럼 보이게 모바일 최대너비만큼 max-width 주기 */
+    max-width: 430px;
+    margin: 0 auto;
+    width: 100%;
+    background-color: #FFFFFF;
+    padding: 0 1.25rem;
+    position: relative;
+    /* ㄴ> 푸터 fix 기준 */
+}
+
+
+body {
+    background-color: #FFFFFF;
+}
+
+/* PC에서만 */
+@media (min-width: 769px) {
+    body {
+        background: #f5f5f5;
+    }
 }
