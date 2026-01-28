@@ -1,16 +1,9 @@
 'use client';
 
-import { StatusBarStyle } from 'expo-status-bar';
 import { useState } from 'react';
-import { Edge } from 'react-native-safe-area-context';
+import { DeviceLayout, onResponse } from './types';
 
-type DeviceLayout = {
-    notchBackgroundColor: string;
-    statusBarStyle: StatusBarStyle;
-    safeAreaViewEdge: readonly Edge[];
-};
-
-export const useDeviceLayout = (onResponse) => {
+export const useDeviceLayout = (onResponse: onResponse) => {
     const [layout, setLayout] = useState<DeviceLayout>({
         notchBackgroundColor: 'white',
         statusBarStyle: 'dark',

@@ -1,20 +1,11 @@
 import { useDeviceSetting } from '@/src/commons/settings/device-setting/hook';
 import { useRouter } from 'next/navigation';
 import { LogInSchemaType } from './schema';
-import { ApolloError, gql, useMutation } from '@apollo/client';
+import { gql, useMutation } from '@apollo/client';
 import { useEffect, useState } from 'react';
-import { message, Modal } from 'antd';
+import { message } from 'antd';
 import { getAccessToken } from '@/src/commons/libraries/get-access-token';
 import { useAccessTokenStore } from '@/src/commons/stores/token-store';
-import { webviewLog } from '@/src/commons/libraries/webview-log';
-
-const RESTORE_ACCESS_TOKEN = gql`
-    mutation restoreAccessToken {
-        restoreAccessToken {
-            accessToken
-        }
-    }
-`;
 
 const LOG_IN = gql`
     mutation login($loginInput: LoginInput!) {
@@ -36,8 +27,6 @@ type FetchDeviceAuthResult = {
 export const useInitializeLogIn = () => {
     const { fetchApp } = useDeviceSetting();
     const router = useRouter();
-
-    const [restore_accessToken] = useMutation(RESTORE_ACCESS_TOKEN);
 
     // 스플래시 화면 유무
     const [tokenChecking, setTokenChecking] = useState(true);
@@ -63,21 +52,7 @@ export const useInitializeLogIn = () => {
                         return;
                     }
 
-                    // // 리프레시 토큰이 유효하면 액세스토큰을 재발급 받고 솔플레이스로 이동하기
-                    // // 백엔드에 액세스토큰 재발급 요청하기
-                    // const restoreResult = await restore_accessToken();
-                    // const accessToken = restoreResult.data.restoreAccessToken.accessToken;
-
-                    // alert(`2. 새로운 액세스 토큰 : ${accessToken}`);
-
-                    // // zustand에 accessToken 저장
-                    // if (accessToken) {
-                    //     setAccessToken(accessToken);
-                    //     localStorage.setItem('accessToken', accessToken);
-                    //     return router.push('/solplace-logs'); // 자동 로그인
-                    // }
-
-                    // 🔴 3. 가져온 리프레시 토큰을 직접 넣어서 액세스 토큰 요청
+                    // 가져온 리프레시 토큰을 직접 넣어서 액세스 토큰 요청
                     const newAccessToken = await getAccessToken(refreshToken);
                     if (newAccessToken) {
                         setAccessToken(newAccessToken);
@@ -98,7 +73,7 @@ export const useInitializeLogIn = () => {
                 // 자동로그인 실패 - 로그인 했던 적 없거나 만료되었을 때
                 setTokenChecking(false);
             } catch (error) {
-                alert(error);
+                console.log(error);
                 // 에러나면 로그인 화면
                 setTokenChecking(false);
             }
@@ -136,18 +111,16 @@ export const useInitializeLogIn = () => {
             // ================= 앱에 토큰 저장 ==============
             if (window.ReactNativeWebView) {
                 // RN에 accessToken 저장 API 요청하기
-                const accessTokenRes = await fetchApp({
+                await fetchApp({
                     query: 'updateDeviceAuthForAccessTokenSet',
                     variables: { accessToken: accessToken },
                 });
-                alert(accessTokenRes?.data?.updateDeviceAuthForAccessTokenSet?.message);
 
                 // RN에 refreshToken 저장 API 요청하기
-                const refreshTokenRes = await fetchApp({
+                await fetchApp({
                     query: 'updateDeviceAuthForRefreshTokenSet',
                     variables: { refreshToken: refreshToken },
                 });
-                alert(refreshTokenRes?.data?.updateDeviceAuthForRefreshTokenSet?.message);
             }
 
             // 솔플레이스로그 페이지로 이동

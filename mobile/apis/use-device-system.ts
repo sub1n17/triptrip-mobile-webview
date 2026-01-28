@@ -1,11 +1,12 @@
 import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 import { AppState, Linking, Platform } from 'react-native';
+import { onResponse } from './types';
 
 const isAndroid = Platform.OS === 'android';
 const isIos = Platform.OS === 'ios';
 
-export const useDeviceSystem = (onResponse) => {
+export const useDeviceSystem = (onResponse: onResponse) => {
     // 앱 정보 조회하기
     const fetchDeviceSystemForAppSet = () => {
         onResponse({

@@ -1,3 +1,4 @@
+import { ApiQuery, ApiQueryWrap, WebViewRef } from './types';
 import { useDeviceAuth } from './use-device-auth';
 import { useDeviceLayout } from './use-device-layout';
 import { useDeviceLocation } from './use-device-location';
@@ -5,13 +6,13 @@ import { useDeviceNotifications } from './use-device-notifications';
 import { useDeviceRouting } from './use-device-routing';
 import { useDeviceSystem } from './use-device-system';
 
-export const useApis = (webviewRef) => {
+export const useApis = (webviewRef: WebViewRef) => {
     // 응답
-    const onResponse = (result) => {
+    const onResponse = (result: unknown) => {
         webviewRef.current?.postMessage(JSON.stringify(result));
     };
 
-    const APIS = {
+    const APIS: ApiQueryWrap = {
         ...useDeviceSystem(onResponse),
         ...useDeviceLocation(onResponse),
         ...useDeviceNotifications(onResponse),
@@ -21,7 +22,7 @@ export const useApis = (webviewRef) => {
     };
 
     // 요청
-    const onRequest = (query, variables) => {
+    const onRequest = (query: ApiQuery, variables?: unknown) => {
         APIS[query](variables);
     };
 

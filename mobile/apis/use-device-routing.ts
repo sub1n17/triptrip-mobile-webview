@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { BackHandler, ToastAndroid } from 'react-native';
+import { onResponse } from './types';
 
-export const useDeviceRouting = (onResponse) => {
+export const useDeviceRouting = (onResponse: onResponse) => {
     const [backCount, setBackCount] = useState(0);
 
     // 백버튼 감지하기

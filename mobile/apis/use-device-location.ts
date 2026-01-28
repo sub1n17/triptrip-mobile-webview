@@ -1,6 +1,7 @@
 import * as Location from 'expo-location';
+import { onResponse } from './types';
 
-export const useDeviceLocation = (onResponse) => {
+export const useDeviceLocation = (onResponse: onResponse) => {
     // 위치 권한 요청하기
     const fetchDeviceLocationForLatLngSet = async () => {
         const result = await Location.requestForegroundPermissionsAsync();

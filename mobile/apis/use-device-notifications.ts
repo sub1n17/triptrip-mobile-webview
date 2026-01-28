@@ -1,6 +1,11 @@
 import * as Notifications from 'expo-notifications';
 import { useEffect } from 'react';
 import { Platform } from 'react-native';
+import { onResponse } from './types';
+
+interface CreateNotificationVariables {
+    solplaceLogId: string;
+}
 
 // 1. 알람 수신 대기(IOS 필수)
 Notifications.setNotificationHandler({
@@ -13,13 +18,13 @@ Notifications.setNotificationHandler({
     }),
 });
 
-export const useDeviceNotifications = (onResponse) => {
+export const useDeviceNotifications = (onResponse: onResponse) => {
     async function requestNotificationPermission() {
         const { status } = await Notifications.requestPermissionsAsync();
-        console.log('Notification permission:', status);
+        // console.log('Notification permission:', status);
 
         if (status !== 'granted') {
-            console.warn('알림 권한이 거부되었습니다.');
+            // console.warn('알림 권한이 거부되었습니다.');
             return;
         }
 
@@ -42,7 +47,7 @@ export const useDeviceNotifications = (onResponse) => {
     // 알림 권한 요청
     const requestDeviceNotificationsForPermissionSolplaceLogNewSet = async () => {
         const { status } = await Notifications.requestPermissionsAsync();
-        console.log('notification permission status:', status);
+        // console.log('notification permission status:', status);
         onResponse({
             requestDeviceNotificationsForPermissionSolplaceLogNewSet: {
                 message: '요청 완료',
@@ -51,16 +56,18 @@ export const useDeviceNotifications = (onResponse) => {
     };
 
     // 스케줄 알림 생성
-    const createDeviceNotificationsForSolplaceLogNewSet = async (variables) => {
+    const createDeviceNotificationsForSolplaceLogNewSet = async (
+        variables: CreateNotificationVariables,
+    ) => {
         const { status } = await Notifications.getPermissionsAsync();
         if (status !== 'granted') {
-            console.warn('권한이 없어 알림을 보낼 수 없음');
+            // console.warn('권한이 없어 알림을 보낼 수 없음');
             return;
         }
 
-        console.log('알림 예약 content', {
-            page: `/solplace-logs/${variables.solplaceLogId}`,
-        });
+        // console.log('알림 예약 content', {
+        //     page: `/solplace-logs/${variables.solplaceLogId}`,
+        // });
 
         await Notifications.scheduleNotificationAsync({
             content: {

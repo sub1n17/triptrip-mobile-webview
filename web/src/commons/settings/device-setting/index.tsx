@@ -11,7 +11,6 @@ type DeviceSettingProps = {
 export const requestAPI: {
     [key: string]: (value: unknown) => void;
 } = {};
-// export const requestAPI = {};
 
 export const DeviceSetting = ({ children }: DeviceSettingProps) => {
     const { onRouterPush, onRouterBack } = useRoutingSetting();
