@@ -11,15 +11,3 @@
     position: relative;
     /* ㄴ> 푸터 fix 기준 */
 }
-
-
-body {
-    background-color: #FFFFFF;
-}
-
-/* PC에서만 */
-@media (min-width: 769px) {
-    body {
-        background: #f5f5f5;
-    }
-}

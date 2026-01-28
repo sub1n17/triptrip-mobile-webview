@@ -1,21 +1,26 @@
 import type { Metadata, Viewport } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+// import { Geist, Geist_Mono } from 'next/font/google';
+import { Inter } from 'next/font/google';
 import './globals.css';
 import Layout from '../commons/layout';
 import { DeviceSetting } from '../commons/settings/device-setting';
 import Script from 'next/script';
 import ApolloSetting from '../commons/settings/apollo-setting';
 
-const geistSans = Geist({
+const geistSans = Inter({
     variable: '--font-geist-sans',
     subsets: ['latin'],
-    preload: false,
+    // variable: '--font-geist-sans',
+    // subsets: ['latin'],
+    // preload: false,
 });
 
-const geistMono = Geist_Mono({
+const geistMono = Inter({
     variable: '--font-geist-mono',
     subsets: ['latin'],
-    preload: false,
+    // variable: '--font-geist-mono',
+    // subsets: ['latin'],
+    // preload: false,
 });
 
 export const metadata: Metadata = {

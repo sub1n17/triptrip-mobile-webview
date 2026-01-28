@@ -30,14 +30,19 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
-/* .layout-padding {
-    padding-inline: 1.25rem;
-} */
-
-html {
-    /*  360 : 16 = 100vw : x */
-    /* font-size: calc((40 / 9) * 1vw); */
+::placeholder {
+    color: #ABABAB;
+    font-size: 0.875rem;
+    font-weight: 500;
 }
+
+/* PC에서만 */
+@media (min-width: 769px) {
+    body {
+        background: #f5f5f5;
+    }
+}
+
 
 /* 페이지 이동하기 뷰트랜지션 */
 @keyframes old_page {

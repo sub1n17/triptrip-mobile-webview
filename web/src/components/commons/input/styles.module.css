@@ -6,11 +6,6 @@
     padding-inline: 1rem;
 }
 
-::placeholder {
-    color: #ABABAB;
-    font-size: 0.875rem;
-    font-weight: 500;
-}
 
 .error_txt {
     font-size: 0.75rem;

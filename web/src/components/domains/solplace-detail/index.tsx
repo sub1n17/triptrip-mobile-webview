@@ -38,21 +38,6 @@ const imgSrc = {
     imageClose: '/images/image_close.png',
 };
 
-// const FETCH_PLACE = gql`
-//     query fetchSolplaceLog($id: ID!) {
-//         fetchSolplaceLog(id: $id) {
-//             id
-//             title
-//             contents
-//             address
-//             lat
-//             lng
-//             images
-//             userId
-//         }
-//     }
-// `;
-
 const DELETE_PLACE = gql`
     mutation deleteSolplaceLog($id: ID!) {
         deleteSolplaceLog(id: $id)
@@ -235,13 +220,6 @@ export default function SolPlaceDetail() {
                                         e.currentTarget.src = '/images/defaultPlaceImg.jpg';
                                     }}
                                 />
-                                {/* <Image
-                                    src={imgSrc.placeImage}
-                                    alt="placeImage"
-                                    fill
-                                    style={{ objectFit: 'cover' }}
-                                    loading="eager"
-                                /> */}
                             </div>
                         ) : (
                             // 이미지 있을 때
@@ -272,14 +250,6 @@ export default function SolPlaceDetail() {
                                                         '/images/defaultPlaceImg.jpg';
                                                 }}
                                             />
-
-                                            {/* <Image
-                                                src={`https://storage.googleapis.com/${el}`}
-                                                alt={`placeImage_${index}`}
-                                                fill
-                                                style={{ objectFit: 'cover' }}
-                                                loading="eager"
-                                            /> */}
                                         </div>
                                     </SwiperSlide>
                                 ))}
@@ -308,26 +278,6 @@ export default function SolPlaceDetail() {
                                         </Dropdown>
                                     </button>
                                 )}
-
-                                {/* {data?.fetchSolplaceLog.userId === loginUserId && (
-                                    <Link
-                                        href={`/solplace-logs/${data?.fetchSolplaceLog.id}/edit`}
-                                        className={style.edit_img}
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            router.push(
-                                                `/solplace-logs/${data?.fetchSolplaceLog.id}/edit`,
-                                            );
-                                        }}
-                                    >
-                                        <Image
-                                            src={imgSrc.edit}
-                                            alt="수정하기"
-                                            fill
-                                            sizes="24px"
-                                        ></Image>
-                                    </Link>
-                                )} */}
                             </div>
                             {/* 주소 */}
                             {placeLat && placeLng && (
@@ -431,15 +381,6 @@ export default function SolPlaceDetail() {
                                         e.currentTarget.src = '/images/defaultPlaceImg.jpg';
                                     }}
                                 />
-
-                                {/* <Image
-                                    src={imgSrc.placeImage}
-                                    alt="이미지"
-                                    fill
-                                    sizes="100vw"
-                                    style={{ objectFit: 'contain' }}
-                                    unoptimized
-                                ></Image> */}
                             </div>
                         ) : (
                             // 이미지 있을 때
@@ -474,12 +415,6 @@ export default function SolPlaceDetail() {
                                                                 '/images/defaultPlaceImg.jpg';
                                                         }}
                                                     />
-                                                    {/* <Image
-                                                        src={`https://storage.googleapis.com/${el}`}
-                                                        alt={`placeImage_${index}`}
-                                                        fill
-                                                        style={{ objectFit: 'contain' }}
-                                                    /> */}
                                                 </div>
                                             </div>
                                         </SwiperSlide>
