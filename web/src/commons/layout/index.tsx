@@ -8,7 +8,7 @@ interface ILayoutProps {
 export default function Layout({ children }: ILayoutProps) {
     return (
         <>
-            <div className={style.layout_wrapper}>
+            <div className={`${style.layout_wrapper}`}>
                 <HeaderGlobal></HeaderGlobal>
                 <HeaderLocal></HeaderLocal>
                 <div className={style.page_container}>{children}</div>

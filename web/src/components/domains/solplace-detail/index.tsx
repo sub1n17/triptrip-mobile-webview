@@ -4,7 +4,7 @@ import Image from 'next/image';
 import style from './styles.module.css';
 import { useEffect, useState } from 'react';
 import { useDeviceSetting } from '@/src/commons/settings/device-setting/hook';
-import { gql, useMutation, useQuery } from '@apollo/client';
+import { ApolloError, gql, useMutation, useQuery } from '@apollo/client';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import Link from 'next/link';
@@ -24,6 +24,7 @@ import { Dropdown, Space } from 'antd';
 import { EllipsisOutlined } from '@ant-design/icons';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import { ExclamationCircleFilled } from '@ant-design/icons';
 
 interface ITokenPayload {
     id: string; // = userId
@@ -126,33 +127,10 @@ export default function SolPlaceDetail() {
         },
     });
 
-    const onClickDelete = async () => {
-        Modal.confirm({
-            title: '플레이스를 삭제하시겠습니까?',
-            okText: '삭제',
-            cancelText: '취소',
-            okType: 'danger',
-            centered: true,
-
-            onOk: async () => {
-                try {
-                    await delete_place({
-                        variables: {
-                            id: String(params.solplaceLogId),
-                        },
-                        refetchQueries: [
-                            { query: FetchSolplaceLogsDocument, variables: { page: 1 } },
-                        ],
-                    });
-                    setTimeout(() => {
-                        message.success('플레이스가 삭제되었습니다.');
-                    }, 100);
-                    router.replace('/solplace-logs');
-                } catch (err) {
-                    message.error((err as Error).message);
-                }
-            },
-        });
+    // 삭제 모달 띄우기
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+    const onClickDelete = () => {
+        setIsDeleteOpen(true);
     };
 
     // 더보기 드롭다운
@@ -341,6 +319,59 @@ export default function SolPlaceDetail() {
                         {/* 내용 */}
                         <div className={style.contents}>{data?.fetchSolplaceLog.contents}</div>
                     </div>
+
+                    {/* 삭제 시 dim블러 커스텀 */}
+                    {isDeleteOpen && <div className={style.innerMask} />}
+                    {/* 삭제 모달 */}
+                    <Modal
+                        open={isDeleteOpen}
+                        mask={false} // antd mask 사용 안하기 (dim 블러)
+                        title={
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                <ExclamationCircleFilled
+                                    style={{ color: '#FAAD14', fontSize: 18 }}
+                                />
+                                <span>플레이스를 삭제하시겠습니까?</span>
+                            </div>
+                        }
+                        okText="삭제"
+                        cancelText="취소"
+                        okType="danger"
+                        centered
+                        getContainer={() =>
+                            document.querySelector('.layout_wrapper') as HTMLElement
+                        }
+                        width={320}
+                        onCancel={() => setIsDeleteOpen(false)}
+                        onOk={async () => {
+                            try {
+                                await delete_place({
+                                    variables: {
+                                        id: String(params.solplaceLogId),
+                                    },
+                                    refetchQueries: [
+                                        {
+                                            query: FetchSolplaceLogsDocument,
+                                            variables: { page: 1 },
+                                        },
+                                    ],
+                                });
+                                message.success('플레이스 삭제 완료');
+                                setIsDeleteOpen(false);
+                                router.replace('/solplace-logs');
+                            } catch (err) {
+                                // UNAUTHENTICATED 에러 있으면 토스트 띄우지 않기
+                                if (
+                                    err instanceof ApolloError &&
+                                    err?.graphQLErrors?.[0]?.extensions?.code === 'UNAUTHENTICATED'
+                                ) {
+                                    return;
+                                }
+                                message.error((err as Error).message);
+                            }
+                        }}
+                        className={style.delete_modal}
+                    ></Modal>
                 </div>
             )}
 

@@ -38,22 +38,7 @@ export const useDeviceLayout = (onResponse: onResponse) => {
         });
     };
 
-    // 상세페이지 사진 풀스크린
-    // const toggleDeviceLayoutForFullScreenSet = () => {
-    //     setLayout((prev) => ({
-    //         notchBackgroundColor: prev.notchBackgroundColor === 'white' ? 'black' : 'white',
-    //         StatusBarStyle: prev.StatusBarStyle === 'light' ? 'dark' : 'light',
-    //         SafeAreaViewEdge: prev.SafeAreaViewEdge.length === 0 ? ['top', 'bottom'] : [],
-    //     }));
-    //     onResponse({
-    //         toggleDeviceLayoutForFullScreenSet: {
-    //             message: '변경 완료',
-    //         },
-    //     });
-    // };
-
     return {
-        // toggleDeviceLayoutForFullScreenSet,
         setFullScreenLayout,
         setDefaultLayout,
         layout,
