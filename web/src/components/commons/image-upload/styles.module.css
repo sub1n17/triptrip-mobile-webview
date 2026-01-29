@@ -4,11 +4,8 @@
 }
 
 .upload_img {
-    /* border-radius: 8px; */
     border-radius: 0.5rem;
     overflow: hidden;
-    /* width: 6.25rem;
-    height: 6.25rem; */
     flex-shrink: 0;
     /* ㄴ> 이미지 추가 시 줄어들지 않게 하기*/
     position: relative;
@@ -18,17 +15,20 @@
     display: flex;
     gap: 0.75rem;
     flex-wrap: nowrap;
-    overflow-x: auto;
-    margin-right: calc(-1.25rem);
-    /* ㄴ> 오른쪽 패딩만 제거 */
-    -webkit-overflow-scrolling: touch;
-    /* ㄴ> iOS 사파리에서 스크롤을 자연스럽게(부드럽게) 만들어주는 속성 */
+    width: 100%;
+    overflow: visible !important;
 }
 
-/* 스크롤바 숨기기 */
-.img_wrapper::-webkit-scrollbar {
-    display: none;
+.img_wrapper .swiper-wrapper {
+    align-items: flex-start;
+    overflow: visible;
 }
+
+.slide {
+    width: 6.25rem !important;
+    flex-shrink: 0;
+}
+
 
 .closeImg {
     width: 1.25rem;

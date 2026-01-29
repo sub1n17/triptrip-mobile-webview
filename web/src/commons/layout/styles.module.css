@@ -10,4 +10,5 @@
     padding: 0 1.25rem;
     position: relative;
     /* ㄴ> 푸터 fix 기준 */
+    overflow: hidden;
 }

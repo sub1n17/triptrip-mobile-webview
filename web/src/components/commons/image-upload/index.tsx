@@ -4,6 +4,10 @@ import { ChangeEvent, useRef } from 'react';
 import Image from 'next/image';
 import style from './styles.module.css';
 import { useSolPlaceNewStore } from '@/src/commons/stores/solplaceNew-store';
+import { message } from 'antd';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/free-mode';
 
 const imgSrc = {
     add_img: '/images/add_img.png',
@@ -25,7 +29,7 @@ export default function ImageUpload({ isEdit }: ImageUploadProps) {
         if (!file) return;
 
         if (file?.size > 5 * 1024 * 1024) {
-            alert('5MB 이하의 사진만 업로드 가능합니다.');
+            message.error('5MB 이하의 사진만 업로드 가능합니다.');
             return;
         }
 
@@ -66,7 +70,9 @@ export default function ImageUpload({ isEdit }: ImageUploadProps) {
 
     return (
         <>
-            <div className={style.img_wrapper}>
+            <Swiper slidesPerView="auto" spaceBetween={12} freeMode className={style.img_wrapper}>
+                {/* <div className={style.img_wrapper}> */}
+                {/* 파일 인풋 */}
                 <input
                     type="file"
                     onChange={onChangeFile}
@@ -74,26 +80,57 @@ export default function ImageUpload({ isEdit }: ImageUploadProps) {
                     ref={fileRef}
                     accept="image/jpg, image/png"
                 />
-                <Image
-                    src={imgSrc.add_img}
-                    alt="add_img"
-                    width={100}
-                    height={100}
-                    onClick={onClickUploadImage}
-                    style={{ flexShrink: 0 }}
-                ></Image>
+                <SwiperSlide className={style.slide}>
+                    <Image
+                        src={imgSrc.add_img}
+                        alt="add_img"
+                        width={100}
+                        height={100}
+                        onClick={onClickUploadImage}
+                        style={{ flexShrink: 0 }}
+                    ></Image>
+                </SwiperSlide>
+
                 {/* 기존 이미지 */}
                 {isEdit &&
                     existingImages.map((el, index) => (
+                        <SwiperSlide key={`exist-${index}`} className={style.slide}>
+                            <div className={style.upload_img} key={`${el}_${index}`}>
+                                <Image
+                                    // "data:image/png;base64,AAA..."  => base64 미리보기
+                                    // 사진 추가하면 base64 경로니까 el이 base64인지/서버 URL인지 구분
+                                    src={
+                                        el.startsWith('data:')
+                                            ? el
+                                            : `https://storage.googleapis.com/${el}`
+                                    }
+                                    alt="img"
+                                    width={100}
+                                    height={100}
+                                    style={{ aspectRatio: '1/1', objectFit: 'cover' }}
+                                ></Image>
+                                <button
+                                    onClick={() => onClickDelete(index)}
+                                    className={style.closeImg}
+                                    type="button"
+                                >
+                                    <Image
+                                        src={imgSrc.delete_img}
+                                        alt="삭제"
+                                        width={20}
+                                        height={20}
+                                    ></Image>
+                                </button>
+                            </div>
+                        </SwiperSlide>
+                    ))}
+
+                {/* 새로 업로드한 이미지 */}
+                {previewUrls.map((el, index) => (
+                    <SwiperSlide key={`new-${index}`} className={style.slide}>
                         <div className={style.upload_img} key={`${el}_${index}`}>
                             <Image
-                                // "data:image/png;base64,AAA..."  => base64 미리보기
-                                // 사진 추가하면 base64 경로니까 el이 base64인지/서버 URL인지 구분
-                                src={
-                                    el.startsWith('data:')
-                                        ? el
-                                        : `https://storage.googleapis.com/${el}`
-                                }
+                                src={el}
                                 alt="img"
                                 width={100}
                                 height={100}
@@ -112,33 +149,10 @@ export default function ImageUpload({ isEdit }: ImageUploadProps) {
                                 ></Image>
                             </button>
                         </div>
-                    ))}
-
-                {/* 새로 업로드한 이미지 */}
-                {previewUrls.map((el, index) => (
-                    <div className={style.upload_img} key={`${el}_${index}`}>
-                        <Image
-                            src={el}
-                            alt="img"
-                            width={100}
-                            height={100}
-                            style={{ aspectRatio: '1/1', objectFit: 'cover' }}
-                        ></Image>
-                        <button
-                            onClick={() => onClickDelete(index)}
-                            className={style.closeImg}
-                            type="button"
-                        >
-                            <Image
-                                src={imgSrc.delete_img}
-                                alt="삭제"
-                                width={20}
-                                height={20}
-                            ></Image>
-                        </button>
-                    </div>
+                    </SwiperSlide>
                 ))}
-            </div>
+                {/* </div> */}
+            </Swiper>
         </>
     );
 }
