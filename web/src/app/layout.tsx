@@ -1,5 +1,3 @@
-'use client';
-
 export const dynamic = 'force-dynamic';
 // ㄴ> 브라우저 기능을 SSR/프리렌더 단계에서 실행 못 하게 막기
 
