@@ -7,17 +7,6 @@ export const useDeviceRouting = (onResponse: onResponse) => {
 
     // 백버튼 감지하기
     useEffect(() => {
-        // const backHandler = () => {
-        //     if (backCount === 0) {
-        //         onResponse({
-        //             back: true,
-        //         });
-        //     } else {
-        //         BackHandler.exitApp();
-        //     }
-        //     return true;
-        // };
-
         const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
             if (backCount === 0) {
                 onResponse({
