@@ -18,6 +18,7 @@ export const getAccessToken = async (appRefreshToken?: string) => {
                 // 앱 리프레시 토큰이 있으면 Authorization 헤더에 실어 보냄
                 ...(appRefreshToken ? { Authorization: `Bearer ${appRefreshToken}` } : {}),
             },
+            credentials: 'include',
             // GraphQL 쿼리를 body에 실어 보냄
             body: JSON.stringify({
                 query: `
@@ -31,7 +32,7 @@ export const getAccessToken = async (appRefreshToken?: string) => {
         });
 
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            throw new Error(`error : ${response.status}`);
         }
 
         const result = await response.json();

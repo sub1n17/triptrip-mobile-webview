@@ -1,4 +1,4 @@
-import { Modal, Button } from 'antd';
+import { Modal, Button, message } from 'antd';
 import { useState } from 'react';
 import style from './signupSuccessModal.module.css';
 import Image from 'next/image';
@@ -39,13 +39,12 @@ export const useInitializeSignUp = () => {
             });
 
             setOpen(true);
+
+            return true; // 성공했을 때만 폼 초기화할 거라서 return으로 알려주기
         } catch (error) {
-            Modal.error({
-                title: '회원가입 실패',
-                content: (error as Error).message,
-                centered: true,
-                width: '20rem',
-            });
+            message.error((error as Error).message);
+
+            return false;
         }
     };
 
@@ -66,7 +65,7 @@ export const useInitializeSignUp = () => {
             width="20rem"
             height="12.25rem"
         >
-            <div className={style.title}>회원가입을 축하 드려요.</div>
+            <div className={style.title}>회원가입을 축하드립니다.</div>
             <div className={style.logo_img}>
                 <Image src={'/images/modalLogo.png'} alt="로고" fill sizes="78px"></Image>
             </div>

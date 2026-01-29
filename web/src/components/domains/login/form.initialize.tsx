@@ -33,59 +33,58 @@ export const useInitializeLogIn = () => {
     const { setAccessToken } = useAccessTokenStore();
 
     // 1. 최초 접속 시 자동 로그인 검증
-    useEffect(() => {
-        const checkToken = async () => {
-            try {
-                // =============== 앱일 때 자동 로그인하기 ===============
-                const isApp = typeof window !== 'undefined' && window.ReactNativeWebView;
-                if (isApp) {
-                    // 리프레시토큰 조회
-                    const result = (await fetchApp({
-                        query: 'fetchDeviceAuthForRefreshTokenSet',
-                    })) as FetchDeviceAuthResult;
+    // useEffect(() => {
+    //     const checkToken = async () => {
+    //         try {
+    //             // =============== 앱일 때 자동 로그인하기 ===============
+    //             const isApp = typeof window !== 'undefined' && window.ReactNativeWebView;
+    //             if (isApp) {
+    //                 // 리프레시토큰 조회
+    //                 const result = (await fetchApp({
+    //                     query: 'fetchDeviceAuthForRefreshTokenSet',
+    //                 })) as FetchDeviceAuthResult;
 
-                    const refreshToken =
-                        result?.data?.fetchDeviceAuthForRefreshTokenSet?.refreshToken;
+    //                 const refreshToken =
+    //                     result?.data?.fetchDeviceAuthForRefreshTokenSet?.refreshToken;
 
-                    if (!refreshToken) {
-                        setTokenChecking(false); // 리프레시토큰 없을 때 로그인화면 보여주기
-                        return;
-                    }
+    //                 if (!refreshToken) {
+    //                     setTokenChecking(false); // 리프레시토큰 없을 때 로그인화면 보여주기
+    //                     return;
+    //                 }
 
-                    // 가져온 리프레시 토큰을 직접 넣어서 액세스 토큰 요청
-                    const newAccessToken = await getAccessToken(refreshToken);
-                    if (newAccessToken) {
-                        setAccessToken(newAccessToken);
-                        localStorage.setItem('accessToken', newAccessToken);
-                        return router.replace('/solplace-logs');
-                    }
-                } else {
-                    //   =============== 웹일 때 자동 로그인하기 ===============
-                    const webAccessToken = localStorage.getItem('accessToken');
-                    if (webAccessToken) {
-                        setAccessToken(webAccessToken);
-                        router.replace('/solplace-logs');
-                        return;
-                    }
-                    setTokenChecking(false); // 토큰 없으면 로그인 화면
-                }
+    //                 // 가져온 리프레시 토큰을 직접 넣어서 액세스 토큰 요청
+    //                 const newAccessToken = await getAccessToken(refreshToken);
+    //                 if (newAccessToken) {
+    //                     setAccessToken(newAccessToken);
+    //                     localStorage.setItem('accessToken', newAccessToken);
+    //                     return router.replace('/solplace-logs');
+    //                 }
+    //             } else {
+    //                 //   =============== 웹일 때 자동 로그인하기 ===============
+    //                 const webAccessToken = localStorage.getItem('accessToken');
+    //                 if (webAccessToken) {
+    //                     setAccessToken(webAccessToken);
+    //                     router.replace('/solplace-logs');
+    //                     return;
+    //                 }
+    //                 setTokenChecking(false); // 토큰 없으면 로그인 화면
+    //             }
 
-                // 자동로그인 실패 - 로그인 했던 적 없거나 만료되었을 때
-                setTokenChecking(false);
-            } catch (error) {
-                console.log(error);
-                // 에러나면 로그인 화면
-                setTokenChecking(false);
-            }
-        };
-        checkToken();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    //             // 자동로그인 실패 - 로그인 했던 적 없거나 만료되었을 때
+    //             setTokenChecking(false);
+    //         } catch (error) {
+    //             console.log(error);
+    //             // 에러나면 로그인 화면
+    //             setTokenChecking(false);
+    //         }
+    //     };
+    //     checkToken();
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, []);
 
     // 2. 로그인 버튼 - 새로 로그인하는 경우
     const [log_in] = useMutation(LOG_IN);
     const onClickSubmit = async (data: LogInSchemaType) => {
-        alert('로그인');
         try {
             // 이메일/비밀번호로 로그인
             const loginResult = await log_in({
@@ -125,8 +124,11 @@ export const useInitializeLogIn = () => {
 
             // 솔플레이스로그 페이지로 이동
             router.replace('/solplace-logs');
+
+            return true;
         } catch (error) {
             message.error((error as Error).message);
+            return false;
         }
     };
 

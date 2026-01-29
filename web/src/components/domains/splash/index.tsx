@@ -11,12 +11,8 @@ export default function Splash() {
 
     useEffect(() => {
         fetchApp({ query: 'setFullScreenLayout' }); // 풀스크린으로 전환
-        const timer = setTimeout(async () => {
-            router.replace('/login');
-        }, 3000);
 
         return () => {
-            clearTimeout(timer);
             fetchApp({ query: 'setDefaultLayout' }); // 기본 상태로 전환
         };
     }, [router]);
@@ -37,6 +33,7 @@ export default function Splash() {
                     style={{ objectFit: 'cover' }}
                     loading="eager"
                     sizes="430px"
+                    priority
                 ></Image>
             </div>
         </>

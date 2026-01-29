@@ -1,6 +1,6 @@
 'use client';
 
-import { gql, useMutation, useQuery } from '@apollo/client';
+import { ApolloError, gql, useMutation, useQuery } from '@apollo/client';
 import { editSchemaType } from './schema';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useSolPlaceNewStore } from '@/src/commons/stores/solplaceNew-store';
@@ -108,7 +108,6 @@ export const useInitializeEdit = () => {
             router.replace(`/solplace-logs/${params.solplaceLogId}?updated=true`);
         } catch (error) {
             const err = error as Error;
-
             if (err.message.includes('작성자')) {
                 message.error({
                     content: err.message,
@@ -116,6 +115,13 @@ export const useInitializeEdit = () => {
                 });
 
                 router.replace(`/solplace-logs/${params.solplaceLogId}`);
+                return;
+            }
+            // UNAUTHENTICATED 에러 있으면 토스트 띄우지 않기
+            if (
+                err instanceof ApolloError &&
+                err?.graphQLErrors?.[0]?.extensions?.code === 'UNAUTHENTICATED'
+            ) {
                 return;
             }
             message.error(err.message);

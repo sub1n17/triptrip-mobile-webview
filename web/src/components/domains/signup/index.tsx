@@ -47,6 +47,7 @@ export default function SignUp() {
                     <InputNormal
                         placeholder={'비밀번호를 입력해 주세요.'}
                         keyname={'password'}
+                        type="password"
                     ></InputNormal>
                 </div>
                 <div>
@@ -56,6 +57,7 @@ export default function SignUp() {
                     <InputNormal
                         placeholder={'비밀번호를 한번 더 입력해 주세요.'}
                         keyname={'passwordCheck'}
+                        type="password"
                     ></InputNormal>
                 </div>
                 <Footer text={'가입하기'}></Footer>

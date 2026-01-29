@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 interface IFormProps {
     children: React.ReactNode;
     schema: any;
-    onClickSubmit: (data: any) => void;
+    onClickSubmit: (data: any) => Promise<boolean>;
     className?: string;
     defaultValues?: any;
 }
@@ -26,8 +26,10 @@ export default function Form<T extends FieldValues>({
     });
 
     const handleSubmit = async (data: T) => {
-        await onClickSubmit(data); // props로 받은 onclick함수 실행시키기
-        methods.reset(); // 실행시킨 후 폼 초기화
+        const isSuccess = await onClickSubmit(data); // props로 받은 onclick함수 실행시키기
+        if (isSuccess) {
+            methods.reset(); // ✅ 성공했을 때만 초기화
+        }
     };
 
     return (

@@ -3,7 +3,7 @@
 import { useDeviceSetting } from '@/src/commons/settings/device-setting/hook';
 import { newSchemaType } from './schema';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { gql, useMutation } from '@apollo/client';
+import { ApolloError, gql, useMutation } from '@apollo/client';
 import { useSolPlaceNewStore } from '@/src/commons/stores/solplaceNew-store';
 import { message } from 'antd';
 
@@ -85,7 +85,7 @@ export const useInitializeNew = () => {
                 refetchQueries: [{ query: FETCH_PLACES, variables: { page: 1 } }],
             });
 
-            message.success('게시글이 등록되었습니다.');
+            message.success('플레이스 등록 완료');
             router.replace(`/solplace-logs/${result.data?.createSolplaceLog?.id}`);
 
             // 등록 완료 시, 알람 권한 요청
@@ -100,6 +100,13 @@ export const useInitializeNew = () => {
             // 등록 후, 전역 상태 초기화하기
             useSolPlaceNewStore.getState().reset();
         } catch (error) {
+            // UNAUTHENTICATED 에러 있으면 토스트 띄우지 않기
+            if (
+                error instanceof ApolloError &&
+                error?.graphQLErrors?.[0]?.extensions?.code === 'UNAUTHENTICATED'
+            ) {
+                return;
+            }
             message.error((error as Error).message);
         }
     };

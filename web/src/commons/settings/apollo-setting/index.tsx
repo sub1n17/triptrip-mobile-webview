@@ -15,6 +15,7 @@ import { setContext } from '@apollo/client/link/context';
 import { createUploadLink } from 'apollo-upload-client';
 import { useEffect } from 'react';
 import { useDeviceSetting } from '../device-setting/hook';
+import { message } from 'antd';
 
 interface IApolloSetting {
     children: React.ReactNode;
@@ -37,20 +38,20 @@ export default function ApolloSetting(props: IApolloSetting) {
             for (const error of graphQLErrors) {
                 // 에러 중 토큰 만료 에러가 있는지 체크하기
                 if (error.extensions?.code === 'UNAUTHENTICATED') {
+                    if (typeof window !== 'undefined' && window.ReactNativeWebView) {
+                        // 웹 - refreshToken은 있지만 CORS 정책 때문에 웹에서는 전송 자체가 불가능한 상태라서 localStorage로 판단하기
+                        localStorage.removeItem('accessToken');
+                        message.error('세션이 만료되었습니다. 다시 로그인해 주세요.');
+                        setTimeout(() => (location.href = '/login'), 500);
+                        return;
+                    }
+                    // 앱
                     return fromPromise(
                         // graphql-request로 쿼리 요청 후 재발급 받은 accessToken 저장하기
                         getAccessToken().then((newAccessToken) => {
                             if (!newAccessToken) return;
-
+                            localStorage.setItem('accessToken', newAccessToken);
                             setAccessToken(newAccessToken);
-                            // 실패한 쿼리의 정보 수정하기, 새 토큰으로 덮어씌우기
-                            operation.setContext({
-                                headers: {
-                                    ...operation.getContext().headers,
-                                    Authorization: `Bearer ${newAccessToken}`,
-                                },
-                                // credentials: 'include',
-                            });
                             return newAccessToken;
                         }),
                     ).flatMap(() => forward(operation)); // 실패한 쿼리를 다시 실행
@@ -59,23 +60,20 @@ export default function ApolloSetting(props: IApolloSetting) {
         }
     });
 
-    // const httpLink = new HttpLink({
-    //     uri: 'https://main-hybrid.codebootcamp.co.kr/graphql',
-    //     // credentials: 'include',
-    //     credentials: 'omit',
-    // });
+    // 토큰 확인
+    const authLink = setContext(async (_, { headers }) => {
+        const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
 
-    const authLink = setContext((_, { headers }) => {
-        const { accessToken } = useAccessTokenStore.getState();
         return {
             headers: {
                 ...headers,
-                Authorization: accessToken ? `Bearer ${accessToken}` : '',
-                'Apollo-Require-Preflight': 'true',
+                Authorization: token ? `Bearer ${token}` : '',
+                'apollo-require-preflight': 'true',
             },
         };
     });
 
+    // 파일 업로드 링크
     const uploadLink = createUploadLink({
         uri: 'https://main-hybrid.codebootcamp.co.kr/graphql',
         credentials: 'omit',
