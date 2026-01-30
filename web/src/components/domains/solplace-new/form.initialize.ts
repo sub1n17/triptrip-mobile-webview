@@ -69,8 +69,6 @@ export const useInitializeNew = () => {
                 }),
             );
 
-            // const imagesUrls = imagesFiles.map((el) => el.data.uploadFile.url);
-
             const result = await createLog({
                 variables: {
                     createSolplaceLogInput: {
@@ -99,15 +97,17 @@ export const useInitializeNew = () => {
 
             // 등록 후, 전역 상태 초기화하기
             useSolPlaceNewStore.getState().reset();
+            return true;
         } catch (error) {
             // UNAUTHENTICATED 에러 있으면 토스트 띄우지 않기
             if (
                 error instanceof ApolloError &&
                 error?.graphQLErrors?.[0]?.extensions?.code === 'UNAUTHENTICATED'
             ) {
-                return;
+                return false;
             }
             message.error((error as Error).message);
+            return false;
         }
     };
 
