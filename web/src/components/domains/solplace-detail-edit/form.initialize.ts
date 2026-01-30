@@ -106,6 +106,7 @@ export const useInitializeEdit = () => {
             });
 
             router.replace(`/solplace-logs/${params.solplaceLogId}?updated=true`);
+            return true;
         } catch (error) {
             const err = error as Error;
             if (err.message.includes('작성자')) {
@@ -115,18 +116,20 @@ export const useInitializeEdit = () => {
                 });
 
                 router.replace(`/solplace-logs/${params.solplaceLogId}`);
-                return;
+                return false;
             }
             // UNAUTHENTICATED 에러 있으면 토스트 띄우지 않기
             if (
                 err instanceof ApolloError &&
                 err?.graphQLErrors?.[0]?.extensions?.code === 'UNAUTHENTICATED'
             ) {
-                return;
+                return false;
             }
             message.error(err.message);
+            return false;
         }
     };
+
     return {
         onClickSubmit,
     };
