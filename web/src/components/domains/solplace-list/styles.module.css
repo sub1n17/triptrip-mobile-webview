@@ -61,10 +61,20 @@
 }
 
 .add_place {
-    position: sticky;
+    position: fixed;
     bottom: 5rem;
     display: flex;
     justify-content: end;
+    z-index: 999;
+    max-width: calc(430px - 20px - 20px);
+    width: 100%;
+    padding-right: 1.25rem;
+    pointer-events: none;
+}
+
+.add_place button {
+    pointer-events: auto;
+    cursor: pointer;
 }
 
 .place_wrapper {
@@ -73,7 +83,7 @@
 }
 
 .list_end {
-    padding: 2rem 0 0;
+    padding: 2rem 0;
     text-align: center;
     font-size: 0.875rem;
     color: #999;
