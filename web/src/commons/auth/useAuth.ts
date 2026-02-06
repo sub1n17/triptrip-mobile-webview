@@ -12,7 +12,7 @@ export default function UseAuth() {
     const { setAccessToken } = useAccessTokenStore();
     const client = useApolloClient();
 
-    const checkToken = async () => {
+    const checkToken = async (): Promise<boolean> => {
         try {
             const isApp = typeof window !== 'undefined' && window.ReactNativeWebView;
 
@@ -65,6 +65,7 @@ export default function UseAuth() {
             setAccessToken('');
             return false;
         }
+        return false;
     };
 
     return {
