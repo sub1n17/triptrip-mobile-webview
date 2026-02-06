@@ -128,34 +128,12 @@ export default function SolPlaceList() {
                                             }}
                                         />
                                         {/* ㄴ> 사진 파일이 이상한 게시글이 있는데 next/image는 조금이라도 이상하면 reject 시켜서 엄격한데 img는 그냥 브라우저가 대충 렌더링 시도해서 깨진 이미지 자동 fallback시킴 -> 손상된 이미지가 안전함 */}
-
-                                        {/* <Image
-                                            src={imageSrc}
-                                            alt="img"
-                                            fill
-                                            style={{ objectFit: 'cover' }}
-                                            sizes="9.375rem"
-                                            priority={index === 0} // 첫 번째 이미지에만 priority
-                                        /> */}
                                     </div>
                                     <div>
                                         <div className={style.title}>{el.title} </div>
                                         <div className={style.contents}>{el.contents} </div>
                                     </div>
-                                    {/* {el.addressCity && (
-                                    <div className={style.location_wrapper}>
-                                        <div className={style.location_img}>
-                                            <Image
-                                                src={imgSrc.location}
-                                                alt="location"
-                                                fill
-                                            ></Image>
-                                        </div>
-                                        <div className={style.address}>
-                                            {el.addressCity} {el.addressTown}
-                                        </div>
-                                    </div>
-                                )} */}
+
                                     {el.address && (
                                         <div className={style.location_wrapper}>
                                             <div className={style.location_img}>

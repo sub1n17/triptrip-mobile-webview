@@ -7,8 +7,10 @@ import { useEffect, useState } from 'react';
 import Footer from '@/src/commons/layout/footer/footer';
 import { message } from 'antd';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
+import LoginOutlinedIcon from '@mui/icons-material/LoginOutlined';
 import { useAccessTokenStore } from '@/src/commons/stores/token-store';
 import { useRouter } from 'next/navigation';
+import UseAuth from '@/src/commons/auth/useAuth';
 
 interface DeviceResponse<T> {
     data: T;
@@ -55,6 +57,8 @@ export default function MyPage() {
     // 값이 있으면 권한 값 사용하고 없으면 권한은 모두 false
     const displayPermissions = permissions ?? { location: false, notification: false };
 
+    const { checkToken } = UseAuth();
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     // ================ 앱(WebView)일 때, 초기 권한 상태 조회하기 ================
     useEffect(() => {
         if (!isApp) return; // 웹이면 아무 것도 하지 않음
@@ -80,6 +84,10 @@ export default function MyPage() {
                 location: locationStatus === 'granted' ? true : false,
                 notification: notificationStatus === 'granted' ? true : false,
             });
+
+            // 토큰 조회 → 토큰 유효하면 true 반환되고 로그아웃 버튼 나타남
+            const isValid = await checkToken();
+            setIsLoggedIn(isValid);
         };
         fetchInitialPermissions();
     }, []);
@@ -93,7 +101,9 @@ export default function MyPage() {
             try {
                 const status = await navigator.permissions.query({ name: 'geolocation' });
                 locationAllowed = status.state === 'granted';
-            } catch {}
+            } catch (err) {
+                console.log((err as Error).message);
+            }
         }
 
         const notificationAllowed =
@@ -106,12 +116,20 @@ export default function MyPage() {
     };
 
     useEffect(() => {
-        // 앱일 때
+        // 앱일 때 실행시키지 않기
         if (isApp) return;
 
-        // refreshWebPermissions 안에 setState가 있어서 경고 -> 콜백 형태로 만들어주기
+        // refreshWebPermissions 안에 setState가 있어서 경고 → 콜백 형태로 만들어주기
         const init = async () => {
-            await refreshWebPermissions();
+            try {
+                await refreshWebPermissions();
+
+                // 토큰 조회 → 토큰 유효하면 true 반환되고 로그아웃 버튼 나타남
+                const isValid = await checkToken();
+                setIsLoggedIn(isValid);
+            } catch (err) {
+                console.log((err as Error).message);
+            }
         };
         init();
     }, []);
@@ -294,9 +312,13 @@ export default function MyPage() {
                     isLoading={permissions === null}
                     id="notification-toggle"
                 ></Toggle>
-                <div className={style.logout} onClick={onClickLogout}>
-                    <div>로그아웃</div>
-                    <LogoutOutlinedIcon fontSize="small"></LogoutOutlinedIcon>
+                <div
+                    className={style.logout}
+                    onClick={isLoggedIn ? onClickLogout : () => router.push('/login')}
+                >
+                    <div>{isLoggedIn ? '로그아웃' : '로그인'}</div>
+                    {isLoggedIn && <LogoutOutlinedIcon fontSize="small" />}
+                    {!isLoggedIn && <LoginOutlinedIcon fontSize="small" />}
                 </div>
             </div>
             <Footer navActive={'isMypage'}></Footer>

@@ -37,7 +37,6 @@ export default function SolPlaceDetailEdit() {
 
     // 조회하기
     const params = useParams();
-    // const router = useRouter();
 
     const { data } = useQuery(FETCH_PLACE, {
         variables: {
