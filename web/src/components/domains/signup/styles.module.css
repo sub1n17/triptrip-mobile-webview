@@ -37,3 +37,12 @@
     gap: 0.75rem;
     padding-bottom: 3.75rem;
 }
+
+/* 삭제 모달 dim */
+.innerMask {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(4px);
+    z-index: 999;
+}

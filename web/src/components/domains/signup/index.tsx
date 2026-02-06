@@ -63,6 +63,7 @@ export default function SignUp() {
                 <Footer text={'가입하기'}></Footer>
             </Form>
             {/* 회원가입 모달창 */}
+            {signUpSuccessModal && <div className={style.innerMask} />}
             {signUpSuccessModal}
         </>
     );

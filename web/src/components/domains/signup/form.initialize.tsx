@@ -64,6 +64,7 @@ export const useInitializeSignUp = () => {
             className={style.modal}
             width="20rem"
             height="12.25rem"
+            mask={false}
         >
             <div className={style.title}>회원가입을 축하드립니다.</div>
             <div className={style.logo_img}>
