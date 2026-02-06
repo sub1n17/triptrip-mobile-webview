@@ -8,6 +8,7 @@ import Layout from '../commons/layout';
 import { DeviceSetting } from '../commons/settings/device-setting';
 import Script from 'next/script';
 import ApolloSetting from '../commons/settings/apollo-setting';
+import Auth from '../commons/auth/auth';
 
 const interSans = Inter({
     variable: '--font-inter-sans',
@@ -40,6 +41,7 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+    console.log('카카오 키 확인:', process.env.NEXT_PUBLIC_KAKAO_MAP_KEY);
     return (
         <html lang="ko">
             <body className={`${interSans.variable} ${interMono.variable} antialiased `}>
@@ -52,7 +54,9 @@ export default function RootLayout({
                 <ApolloSetting>
                     {/* 모든 페이지에서 API 사용 가능하기 */}
                     <DeviceSetting>
-                        <Layout>{children}</Layout>
+                        <Auth>
+                            <Layout>{children}</Layout>
+                        </Auth>
                     </DeviceSetting>
                 </ApolloSetting>
             </body>
