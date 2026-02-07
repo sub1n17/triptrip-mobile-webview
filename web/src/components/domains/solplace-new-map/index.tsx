@@ -46,6 +46,12 @@ export default function SolPlaceNewMap() {
             <Script
                 src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_MAP_KEY}&autoload=false&libraries=services`}
                 strategy="afterInteractive"
+                onLoad={() => {
+                    // autoload=false일 때 load()호출하기
+                    window.kakao.maps.load(() => {
+                        setKakaoLoaded(true);
+                    });
+                }}
             />
 
             {!kakaoLoaded && (
