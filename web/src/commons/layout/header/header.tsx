@@ -43,6 +43,7 @@ const HeaderBase = ({ title, hasLogo, hasBack, isTransParent }: IHeaderBaseProps
                             fill
                             sizes="24px"
                             loading="eager"
+                            priority
                         ></Image>
                     </div>
                 )}
