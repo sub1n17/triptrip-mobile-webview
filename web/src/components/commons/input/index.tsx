@@ -34,19 +34,6 @@ function InputBase({
 
     return (
         <>
-            {/* {formContext && keyname ? (
-                <input
-                    type="text"
-                    placeholder={placeholder}
-                    {...register(keyname)}
-                    className={className}
-                    value={value}
-                    onChange={onChange}
-                />
-            ) : (
-                <input type="text" className={className} value={value} readOnly={readOnly}></input>
-            )}  */}
-
             <input
                 type={!type ? 'text' : 'password'}
                 placeholder={placeholder}

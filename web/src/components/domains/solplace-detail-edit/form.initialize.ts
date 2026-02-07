@@ -106,6 +106,8 @@ export const useInitializeEdit = () => {
             });
 
             router.replace(`/solplace-logs/${params.solplaceLogId}?updated=true`);
+            // 수정 후, 전역 상태 초기화하기
+            reset();
             return true;
         } catch (error) {
             const err = error as Error;

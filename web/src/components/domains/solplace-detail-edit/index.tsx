@@ -2,7 +2,6 @@
 
 import style from '../solplace-new/styles.module.css';
 import { InputNormal } from '@/src/components/commons/input';
-
 import Form from '../../commons/form';
 import Textarea from '../../commons/textarea';
 import Footer from '@/src/commons/layout/footer/footer';
@@ -44,14 +43,6 @@ export default function SolPlaceDetailEdit() {
         },
     });
 
-    // form 값 넣기, 지도 페이지에서 다시 돌아왔을 때 store에 있는 값 불러와서 수정값 그대로 보이게 하기
-    const defaultValues = data?.fetchSolplaceLog
-        ? {
-              title: title || data.fetchSolplaceLog.title,
-              contents: contents || data.fetchSolplaceLog.contents,
-          }
-        : {};
-
     // 수정된 주소가 있으면 그걸 쓰고, 없으면 원래 주소 사용
     const searchParams = useSearchParams();
     const placeAddress = searchParams.get('address') ?? data?.fetchSolplaceLog.address ?? '';
@@ -80,10 +71,16 @@ export default function SolPlaceDetailEdit() {
         }
 
         initializedRef.current = true;
+
+        // zustand에서 제목, 내용 값 가져오기
+        setTitle(data.fetchSolplaceLog.title);
+        setContents(data.fetchSolplaceLog.contents);
     }, [data?.fetchSolplaceLog?.id]);
+
     // useRef는 참조용으로 DOM을 가리킬 수도 있고, 값을 기억하는 욛도로 사용됨, 지금은 후자 (이미지 업로드는 전자)
     // 컴포넌트가 마운트될 때 1번 생성되고 언마운트될 때(수정 페이지 벗어날 때) 사라짐 -> 다시 수정페이지 새로 진입 시 false
     // 주소 등록 후 수정페이지로 돌아오는 건 샬로우라우팅이라서 언마운트되는게 아니기 때문에 계속 true 유지
+
     return (
         <>
             <main className={style.container}>
@@ -91,7 +88,11 @@ export default function SolPlaceDetailEdit() {
                     schema={editSchema}
                     onClickSubmit={onClickSubmit}
                     className={style.form_wrapper}
-                    defaultValues={defaultValues}
+                    defaultValues={{
+                        title: data?.fetchSolplaceLog.title,
+                        contents: data?.fetchSolplaceLog.contents,
+                    }}
+                    key={data?.fetchSolplaceLog.id} // data값 들어오면 form 재생성 → defaultValues에 넣음
                 >
                     <ImageUpload isEdit={true}></ImageUpload>
 
@@ -103,6 +104,7 @@ export default function SolPlaceDetailEdit() {
                             keyname={'title'}
                             placeholder={'플레이스 이름을 입력해 주세요. (1자 이상)'}
                             onChange={(event) => setTitle(event.target.value)}
+                            value={title}
                         ></InputNormal>
                     </div>
                     <div>
@@ -126,6 +128,7 @@ export default function SolPlaceDetailEdit() {
                             keyname={'contents'}
                             className={style.form_textarea}
                             onChange={(event) => setContents(event.target.value)}
+                            value={contents}
                         ></Textarea>
                     </div>
                     <Footer text={'수정'}></Footer>
