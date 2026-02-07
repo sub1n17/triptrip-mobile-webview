@@ -1,14 +1,10 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Map, MapMarker } from 'react-kakao-maps-sdk';
+import { Map } from 'react-kakao-maps-sdk';
 import style from './styles.module.css';
 import { useDeviceSetting } from '@/src/commons/settings/device-setting/hook';
-
-// declare const window: Window & {
-//     kakao: any;
-// };
 
 interface MapBaseProps {
     address?: string;
@@ -86,41 +82,6 @@ function MapBase({ address, placeLat, placeLng }: MapBaseProps) {
             ) {
                 nextLat = currentLat;
                 nextLng = currentLng;
-
-                // 현재 위치를 url에 넣기
-                // params.set('lat', String(currentLat));
-                // params.set('lng', String(currentLng));
-
-                // 카카오 SDK 로드 확인
-                // if (!window.kakao || !window.kakao.maps) {
-                //     router.replace(
-                //         `?${params.toString()}`,
-                //         // , { shallow: true }
-                //     );
-                //     return;
-                // }
-
-                // 지도 로드 완료 후, 현재 위치의 위도경도로 주소 역지오코딩
-                // window.kakao.maps.load(() => {
-                //     const geocoder = new window.kakao.maps.services.Geocoder();
-
-                //     geocoder.coord2Address(currentLng, currentLat, (result, status) => {
-                //         if (status === window.kakao.maps.services.Status.OK) {
-                //             const addr =
-                //                 result[0].road_address?.address_name ||
-                //                 result[0].address.address_name;
-
-                //             params.set('address', addr);
-                //         }
-
-                //         params.delete('from');
-                //         router.replace(
-                //             `?${params.toString()}`,
-                //             // { shallow: true }
-                //         );
-                //     });
-                // });
-                // return;
             } else if (status === 'denied') {
                 nextLat = 37.5668242; // 서울시청
                 nextLng = 126.9786465;
@@ -133,11 +94,6 @@ function MapBase({ address, placeLat, placeLng }: MapBaseProps) {
                 router.replace(`?${params.toString()}`);
 
                 return;
-
-                // 위치 권한 거부 시, 서울시청 보여주기
-                // params.set('lat', '37.5668242'); // 지도에서 서울시청 찍을때
-                // params.set('lng', '126.9786465');
-                // params.set('address', '서울특별시 중구 세종대로 110');
             } else {
                 return; // 아직 좌표 안 온 상태
             }
@@ -147,10 +103,7 @@ function MapBase({ address, placeLat, placeLng }: MapBaseProps) {
 
             // 카카오 SDK 로드 확인 (지도 SDK 로드는 위치권한 허용/거부 상관없이 무조건 실행)
             if (!window.kakao || !window.kakao.maps) {
-                router.replace(
-                    `?${params.toString()}`,
-                    // , { shallow: true }
-                );
+                router.replace(`?${params.toString()}`);
                 return;
             }
 
@@ -179,12 +132,6 @@ function MapBase({ address, placeLat, placeLng }: MapBaseProps) {
                     router.replace(`?${params.toString()}`);
                 }
             });
-
-            // params.delete('from'); // 역할 끝났으니 제거
-            // router.replace(
-            //     `?${params.toString()}`,
-            //     // { shallow: true }
-            // );
         };
         fetchLocation();
     }, []);
@@ -254,30 +201,27 @@ function MapBase({ address, placeLat, placeLng }: MapBaseProps) {
                 params.set('lng', String(nextLng));
                 params.set('address', addr);
 
-                router.replace(
-                    `?${params.toString()}`,
-                    // { shallow: true }
-                );
+                router.replace(`?${params.toString()}`);
             }
         });
     };
 
     return (
-        <div className={style.mapWrapper}>
-            <Map
-                // ref={mapRef}
-                // key={mapKey} // URL 바뀔 때 재마운트
-                center={initLocation} //지도의 중심을 이 좌표로 맞추기
-                level={3}
-                onIdle={onIdle}
-                className={style.mapElement}
-                onCreate={(map) => {
-                    mapRef.current = map;
-                }}
-            >
-                <div className={style.centerMarker} />
-            </Map>
-        </div>
+        <>
+            <div className={style.mapWrapper}>
+                <Map
+                    center={initLocation} //지도의 중심을 이 좌표로 맞추기
+                    level={3}
+                    onIdle={onIdle}
+                    className={style.mapElement}
+                    onCreate={(map) => {
+                        mapRef.current = map;
+                    }}
+                >
+                    <div className={style.centerMarker} />
+                </Map>
+            </div>
+        </>
     );
 }
 

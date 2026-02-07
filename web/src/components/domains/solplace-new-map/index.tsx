@@ -9,6 +9,9 @@ import { InputRound } from '../../commons/input';
 import style from './styles.module.css';
 
 import dynamic from 'next/dynamic';
+import { useEffect, useState } from 'react';
+import CircularProgress from '@mui/material/CircularProgress';
+import Script from 'next/script';
 const MapNew = dynamic(() => import('../../commons/map').then((mod) => mod.MapNew), {
     ssr: false,
 });
@@ -25,36 +28,60 @@ export default function SolPlaceNewMap() {
     const from = searchParams.get('from') ?? 'new';
     const id = searchParams.get('id');
 
+    const [kakaoLoaded, setKakaoLoaded] = useState(false);
+
+    // 카카오skd가 로드 완료되었는지 확인하기
+    useEffect(() => {
+        const mapLoad = setInterval(() => {
+            if (window.kakao && window.kakao.maps) {
+                setKakaoLoaded(true);
+                clearInterval(mapLoad);
+            }
+        }, 100);
+        return () => clearInterval(mapLoad);
+    }, []);
+
     return (
         <>
-            <div className={style.mapWrapper}>
-                <MapNew address={address} />
-            </div>
+            <Script
+                src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_MAP_KEY}&autoload=false&libraries=services`}
+                strategy="afterInteractive"
+            />
 
-            <div className={style.flexWrapper}>
-                <div>
-                    <InputRound
-                        // defaultValue={address}
-                        value={address}
-                        readOnly
-                    />
+            {!kakaoLoaded && (
+                <div className={style.kakaoLoad}>
+                    <CircularProgress />
                 </div>
+            )}
 
-                <Link
-                    replace
-                    href={
-                        from === 'edit'
-                            ? `/solplace-logs/${id}/edit?lat=${lat}&lng=${lng}&address=${encodeURIComponent(
-                                  address,
-                              )}`
-                            : `/solplace-logs/new?lat=${lat}&lng=${lng}&address=${encodeURIComponent(
-                                  address,
-                              )}`
-                    }
-                >
-                    <ButtonFull text={'이 위치로 등록'} />
-                </Link>
-            </div>
+            {kakaoLoaded && (
+                <>
+                    <div className={style.mapWrapper}>
+                        <MapNew address={address} />
+                    </div>
+
+                    <div className={style.flexWrapper}>
+                        <div>
+                            <InputRound value={address} readOnly />
+                        </div>
+
+                        <Link
+                            replace
+                            href={
+                                from === 'edit'
+                                    ? `/solplace-logs/${id}/edit?lat=${lat}&lng=${lng}&address=${encodeURIComponent(
+                                          address,
+                                      )}`
+                                    : `/solplace-logs/new?lat=${lat}&lng=${lng}&address=${encodeURIComponent(
+                                          address,
+                                      )}`
+                            }
+                        >
+                            <ButtonFull text={'이 위치로 등록'} />
+                        </Link>
+                    </div>
+                </>
+            )}
         </>
     );
 }
