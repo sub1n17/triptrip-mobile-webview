@@ -109,6 +109,8 @@ function MapBase({ address, placeLat, placeLng }: MapBaseProps) {
 
             // 지도 로드 완료 후, 현재 위치의 위도경도로 주소 역지오코딩
             window.kakao.maps.load(() => {
+                if (!window.kakao.maps.services) return;
+
                 // 위치 권한 허용일 때만 주소 역지오코딩
                 if (status === 'granted') {
                     const geocoder = new window.kakao.maps.services.Geocoder();
@@ -142,6 +144,7 @@ function MapBase({ address, placeLat, placeLng }: MapBaseProps) {
         if (!window.kakao || !window.kakao.maps) return;
 
         window.kakao.maps.load(() => {
+            if (!window.kakao.maps.services) return;
             const geocoder = new window.kakao.maps.services.Geocoder();
 
             geocoder.addressSearch(address, (result, status) => {
@@ -189,6 +192,7 @@ function MapBase({ address, placeLat, placeLng }: MapBaseProps) {
 
         lastCenterRef.current = { lat: nextLat, lng: nextLng };
 
+        if (!window.kakao?.maps?.services) return;
         const geocoder = new window.kakao.maps.services.Geocoder();
 
         geocoder.coord2Address(nextLng, nextLat, (result, status) => {
