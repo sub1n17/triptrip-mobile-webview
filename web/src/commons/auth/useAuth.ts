@@ -5,7 +5,7 @@ import { useAccessTokenStore } from '../stores/token-store';
 import { useApolloClient } from '@apollo/client';
 import { FetchDeviceAuthResult } from '@/src/app/page';
 import { getAccessToken } from '../libraries/get-access-token';
-import { FetchSolplaceLogsDocument } from '../graphql/graphql';
+import { RestoreAccessTokenDocument } from '../graphql/graphql';
 
 export default function UseAuth() {
     const { fetchApp } = useDeviceSetting();
@@ -32,31 +32,15 @@ export default function UseAuth() {
                 setAccessToken(newAccessToken);
                 localStorage.setItem('accessToken', newAccessToken);
 
-                await client.query({
-                    query: FetchSolplaceLogsDocument,
-                    variables: { page: 1 },
-                    fetchPolicy: 'no-cache',
-                    errorPolicy: 'none',
-                });
-
                 return true;
             }
 
             // 웹 : 로컬스토리지 토큰 검증
             if (!isApp) {
                 const webAccessToken = localStorage.getItem('accessToken');
-
                 if (!webAccessToken) return false;
+
                 setAccessToken(webAccessToken);
-
-                // 이 토큰이 유효한지 임시 쿼리로 유효성 검증
-                await client.query({
-                    query: FetchSolplaceLogsDocument,
-                    variables: { page: 1 },
-                    fetchPolicy: 'no-cache',
-                    errorPolicy: 'none',
-                });
-
                 return true;
             }
         } catch (error) {

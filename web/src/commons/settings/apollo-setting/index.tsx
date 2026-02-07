@@ -40,8 +40,8 @@ export default function ApolloSetting(props: IApolloSetting) {
                     if (!(typeof window !== 'undefined' && window.ReactNativeWebView)) {
                         // 웹 - refreshToken은 있지만 CORS 정책 때문에 웹에서는 전송 자체가 불가능한 상태라서 localStorage로 판단하기
                         localStorage.removeItem('accessToken');
-                        message.error('로그인 해주세요.');
-                        setTimeout(() => (location.href = '/login'), 500);
+                        message.error('세션이 만료되었습니다. 다시 로그인 해주세요.');
+                        setTimeout(() => (location.href = '/login'), 1000);
                         return;
                     }
                     // 앱
