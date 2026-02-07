@@ -2,9 +2,8 @@ import { useDeviceSetting } from '@/src/commons/settings/device-setting/hook';
 import { useRouter } from 'next/navigation';
 import { LogInSchemaType } from './schema';
 import { gql, useMutation } from '@apollo/client';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { message } from 'antd';
-import { getAccessToken } from '@/src/commons/libraries/get-access-token';
 import { useAccessTokenStore } from '@/src/commons/stores/token-store';
 
 const LOG_IN = gql`
@@ -16,20 +15,12 @@ const LOG_IN = gql`
     }
 `;
 
-type FetchDeviceAuthResult = {
-    data: {
-        fetchDeviceAuthForRefreshTokenSet: {
-            refreshToken: string;
-        };
-    };
-};
-
 export const useInitializeLogIn = () => {
     const { fetchApp } = useDeviceSetting();
     const router = useRouter();
 
     // 스플래시 화면 유무
-    const [tokenChecking, setTokenChecking] = useState(true);
+    const [tokenChecking] = useState(true);
     const { setAccessToken } = useAccessTokenStore();
 
     // 로그인 버튼
@@ -49,7 +40,7 @@ export const useInitializeLogIn = () => {
             const accessToken = loginResult.data.login.accessToken;
             const refreshToken = loginResult.data.login.refreshToken;
 
-            // ================= 웹에 토큰 저장 ==============
+            // ================= 웹 : 토큰 저장 ==============
             // zustand에 accessToken 저장
             if (accessToken) {
                 setAccessToken(accessToken);
@@ -57,7 +48,7 @@ export const useInitializeLogIn = () => {
                 // ㄴ> 상세페이지에서 수정/삭제 버튼 작성자만 보이게 하기 위해 로컬스토리지에 저장 (fetchLoggedIn 쿼리 없어서 대체)
             }
 
-            // ================= 앱에 토큰 저장 ==============
+            // ================= 앱 : 토큰 저장 ==============
             if (window.ReactNativeWebView) {
                 // RN에 accessToken 저장 API 요청하기
                 await fetchApp({
