@@ -7,7 +7,6 @@ import { useDeviceSetting } from '@/src/commons/settings/device-setting/hook';
 import { ApolloError, gql, useMutation, useQuery } from '@apollo/client';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
-import Link from 'next/link';
 import { MenuProps, message, Modal } from 'antd';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
@@ -15,7 +14,6 @@ import { Zoom } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/zoom';
-import { useRoutingSetting } from '@/src/commons/settings/routing-setting/hook';
 import { useFullscreenStore } from '@/src/commons/stores/fullscreen-store';
 import { FetchSolplaceLogDocument, FetchSolplaceLogsDocument } from '@/src/commons/graphql/graphql';
 import { useAccessTokenStore } from '@/src/commons/stores/token-store';
@@ -25,6 +23,7 @@ import { EllipsisOutlined } from '@ant-design/icons';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import { ExclamationCircleFilled } from '@ant-design/icons';
+import Script from 'next/script';
 
 interface ITokenPayload {
     id: string; // = userId
@@ -173,8 +172,25 @@ export default function SolPlaceDetail() {
         },
     ];
 
+    // 카카오skd가 로드 완료되었는지 확인하기
+    const [kakaoLoaded, setKakaoLoaded] = useState(false);
+    useEffect(() => {
+        const mapLoad = setInterval(() => {
+            if (window.kakao && window.kakao.maps) {
+                setKakaoLoaded(true);
+                clearInterval(mapLoad);
+            }
+        }, 100);
+        return () => clearInterval(mapLoad);
+    }, []);
+
     return (
         <>
+            <Script
+                src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_MAP_KEY}&autoload=false`}
+                strategy="afterInteractive"
+            />
+
             {!isFullScreen && (
                 <div>
                     {/* 이미지 */}
@@ -258,7 +274,7 @@ export default function SolPlaceDetail() {
                                 )}
                             </div>
                             {/* 주소 */}
-                            {placeLat && placeLng && (
+                            {placeLat && placeLng && kakaoLoaded && (
                                 <div>
                                     <div className={style.addressDetail_wrapper}>
                                         <div className={style.location_img}>
