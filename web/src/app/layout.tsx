@@ -46,10 +46,10 @@ export default function RootLayout({
         <html lang="ko">
             <body className={`${interSans.variable} ${interMono.variable} antialiased `}>
                 {/* react-kakao-maps-sdk가 내부에서 이미 그 스크립트를 로드하기 때문에 필요없음 */}
-                <Script
+                {/* <Script
                     src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_MAP_KEY}&autoload=false&libraries=services`}
                     strategy="beforeInteractive"
-                />
+                /> */}
 
                 <ApolloSetting>
                     {/* 모든 페이지에서 API 사용 가능하기 */}
