@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Map } from 'react-kakao-maps-sdk';
 import style from './styles.module.css';
@@ -13,6 +13,14 @@ interface MapBaseProps {
 }
 
 function MapBase({ address, placeLat, placeLng }: MapBaseProps) {
+    const [mapReady, setMapReady] = useState(false);
+    useEffect(() => {
+        if (!window.kakao || !window.kakao.maps) return;
+        window.kakao.maps.load(() => {
+            setMapReady(true);
+        });
+    }, []);
+
     const { fetchApp } = useDeviceSetting();
 
     // const mapRef = useRef(null);
@@ -172,10 +180,18 @@ function MapBase({ address, placeLat, placeLng }: MapBaseProps) {
     // 이전 좌표 기억용 ref
     const lastCenterRef = useRef<{ lat: number; lng: number } | null>(null);
 
+    const geocoderRef = useRef<kakao.maps.services.Geocoder | null>(null);
+
     // 지도 이동 → 역지오코딩 + URL 업데이트
     const onIdle = () => {
+        if (!window.kakao?.maps?.services) return;
+
         const map = mapRef.current;
         if (!map) return;
+
+        if (!geocoderRef.current) {
+            geocoderRef.current = new window.kakao.maps.services.Geocoder();
+        }
 
         const latlng = map.getCenter();
         const nextLat = latlng.getLat();
@@ -192,10 +208,10 @@ function MapBase({ address, placeLat, placeLng }: MapBaseProps) {
 
         lastCenterRef.current = { lat: nextLat, lng: nextLng };
 
-        if (!window.kakao?.maps?.services) return;
-        const geocoder = new window.kakao.maps.services.Geocoder();
+        // const geocoder = new window.kakao.maps.services.Geocoder();
 
-        geocoder.coord2Address(nextLng, nextLat, (result, status) => {
+        if (!geocoderRef.current) return;
+        geocoderRef.current.coord2Address(nextLng, nextLat, (result, status) => {
             if (status === window.kakao.maps.services.Status.OK) {
                 const addr = result[0].road_address?.address_name || result[0].address.address_name;
 
@@ -205,11 +221,12 @@ function MapBase({ address, placeLat, placeLng }: MapBaseProps) {
                 params.set('lng', String(nextLng));
                 params.set('address', addr);
 
-                router.replace(`?${params.toString()}`);
+                router.replace(`?${params.toString()}`, { scroll: false });
             }
         });
     };
 
+    if (!mapReady) return null;
     return (
         <>
             <div className={style.mapWrapper}>
