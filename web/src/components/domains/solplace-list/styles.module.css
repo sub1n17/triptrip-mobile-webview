@@ -2,8 +2,6 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(9.375rem, 1fr));
     gap: 1.25rem 1rem;
-    /* padding-bottom: 3.5rem; */
-    /* ㄴ> 네비게이션 높이값만큼 패딩값 주기 */
 }
 
 .list_wrapper {
@@ -66,8 +64,10 @@
     display: flex;
     justify-content: end;
     z-index: 999;
-    max-width: calc(430px - 20px - 20px);
+    max-width: 430px;
     width: 100%;
+    left: 50%;
+    transform: translateX(-50%);
     padding-right: 1.25rem;
     pointer-events: none;
 }
