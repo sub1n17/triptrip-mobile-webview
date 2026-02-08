@@ -41,7 +41,6 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    console.log('카카오 키 확인:', process.env.NEXT_PUBLIC_KAKAO_MAP_KEY);
     return (
         <html lang="ko">
             <body className={`${interSans.variable} ${interMono.variable} antialiased `}>
