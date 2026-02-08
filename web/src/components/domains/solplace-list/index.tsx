@@ -38,6 +38,7 @@ export default function SolPlaceList() {
     // 게시글 조회
     const { data, fetchMore, refetch } = useQuery(FetchSolplaceLogsDocument, {
         variables: { page: 1 },
+        fetchPolicy: 'cache-first',
     });
 
     const [page, setPage] = useState(1);
@@ -65,7 +66,7 @@ export default function SolPlaceList() {
                 // 기존 데이터와 새로 불러온 데이터 합쳐서 보여주기
                 return {
                     fetchSolplaceLogs: [
-                        ...prev.fetchSolplaceLogs,
+                        ...(prev.fetchSolplaceLogs ?? []),
                         ...fetchMoreResult.fetchSolplaceLogs,
                     ],
                 };
@@ -76,6 +77,7 @@ export default function SolPlaceList() {
     // 당겨서 새로고침 (4개 보여주기)
     const onRefresh = () => {
         setPage(1);
+        setHasMore(true);
         refetch({ page: 1 });
     };
 
@@ -88,7 +90,6 @@ export default function SolPlaceList() {
                     hasMore={hasMore}
                     next={onNext}
                     loader={null}
-                    // loader={list.length > 0 ? <div>로딩중</div> : ''}
                     dataLength={list.length}
                     // pull-to-refresh 새로고침
                     pullDownToRefresh={true}
