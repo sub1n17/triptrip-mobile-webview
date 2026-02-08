@@ -19,7 +19,7 @@ const MapEdit = dynamic(() => import('../../commons/map').then((mod) => mod.MapE
 export default function SolPlaceDetailEditMap() {
     const searchParams = useSearchParams();
 
-    const address = searchParams.get('address') || '';
+    const address = searchParams.get('address') || '서울특별시 중구 세종대로 110';
     const lat = searchParams.get('lat');
     const lng = searchParams.get('lng');
 
