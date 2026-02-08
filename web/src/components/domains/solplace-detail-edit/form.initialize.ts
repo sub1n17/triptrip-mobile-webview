@@ -3,8 +3,8 @@
 import { ApolloError, gql, useMutation, useQuery } from '@apollo/client';
 import { editSchemaType } from './schema';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { useSolPlaceNewStore } from '@/src/commons/stores/solplaceNew-store';
 import { message } from 'antd';
+import { useSolPlaceEditStore } from '@/src/commons/stores/solplaceEdit-store';
 
 const UPLOAD_FILE = gql`
     mutation uploadFile($file: Upload) {
@@ -49,7 +49,7 @@ export const useInitializeEdit = () => {
     const router = useRouter();
     const [update_log] = useMutation(UPDATE_LOG);
     const params = useParams();
-    const { files, existingImages, reset } = useSolPlaceNewStore();
+    const { files, existingImages } = useSolPlaceEditStore();
 
     const { data } = useQuery(FETCH_PLACE, {
         variables: {
@@ -106,8 +106,6 @@ export const useInitializeEdit = () => {
             });
 
             router.replace(`/solplace-logs/${params.solplaceLogId}?updated=true`);
-            // 수정 후, 전역 상태 초기화하기
-            reset();
             return true;
         } catch (error) {
             const err = error as Error;
