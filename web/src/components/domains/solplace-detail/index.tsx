@@ -24,6 +24,8 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import Script from 'next/script';
+import { useSolPlaceNewStore } from '@/src/commons/stores/solplaceNew-store';
+import { useSolPlaceEditStore } from '@/src/commons/stores/solplaceEdit-store';
 
 interface ITokenPayload {
     id: string; // = userId
@@ -101,15 +103,23 @@ export default function SolPlaceDetail() {
         setMapToggle((prev) => !prev);
     };
 
-    // 수정 후 수정완료 토스트메시지 띄우기
+    // 수정, 등록완료 토스트메시지 띄우기
     const searchParams = useSearchParams();
     const router = useRouter();
+    const updated = searchParams.get('updated');
+    const isNew = searchParams.get('new');
     useEffect(() => {
-        if (searchParams.get('updated')) {
+        if (updated) {
             message.success('플레이스 수정 완료');
+            useSolPlaceEditStore.getState().reset();
             router.replace(`/solplace-logs/${params.solplaceLogId}`); // 쿼리 스트링 없애기
         }
-    }, [searchParams]);
+        if (isNew) {
+            message.success('플레이스 등록 완료');
+            useSolPlaceNewStore.getState().reset();
+            router.replace(`/solplace-logs/${params.solplaceLogId}`);
+        }
+    }, [updated, isNew]);
 
     // 수정/삭제 작성자만 보이게 하기 (토큰에서 사용자 아이디 가져오기)
     const { accessToken } = useAccessTokenStore();

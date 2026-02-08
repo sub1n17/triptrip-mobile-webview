@@ -8,6 +8,7 @@ import { message } from 'antd';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/free-mode';
+import { useSolPlaceEditStore } from '@/src/commons/stores/solplaceEdit-store';
 
 const imgSrc = {
     add_img: '/images/add_img.png',
@@ -19,9 +20,10 @@ interface ImageUploadProps {
 }
 
 export default function ImageUpload({ isEdit }: ImageUploadProps) {
+    const store = isEdit ? useSolPlaceEditStore : useSolPlaceNewStore;
     // zustand
     const { previewUrls, setPreviewUrls, files, setFiles, existingImages, setExistingImages } =
-        useSolPlaceNewStore();
+        store();
 
     // 이미지 추가하기
     const onChangeFile = (event: ChangeEvent<HTMLInputElement>) => {
