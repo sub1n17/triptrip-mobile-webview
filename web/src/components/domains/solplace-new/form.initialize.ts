@@ -83,8 +83,7 @@ export const useInitializeNew = () => {
                 refetchQueries: [{ query: FETCH_PLACES, variables: { page: 1 } }],
             });
 
-            message.success('플레이스 등록 완료');
-            router.replace(`/solplace-logs/${result.data?.createSolplaceLog?.id}`);
+            router.replace(`/solplace-logs/${result.data?.createSolplaceLog?.id}?new=true`);
 
             // 등록 완료 시, 알람 권한 요청
             await fetchApp({ query: 'requestDeviceNotificationsForPermissionSolplaceLogNewSet' });
@@ -95,8 +94,6 @@ export const useInitializeNew = () => {
                 variables: { solplaceLogId: result.data.createSolplaceLog.id },
             });
 
-            // 등록 후, 전역 상태 초기화하기
-            useSolPlaceNewStore.getState().reset();
             return true;
         } catch (error) {
             // UNAUTHENTICATED 에러 있으면 토스트 띄우지 않기
