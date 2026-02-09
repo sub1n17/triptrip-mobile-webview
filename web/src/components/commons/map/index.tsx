@@ -13,6 +13,15 @@ interface MapBaseProps {
 }
 
 function MapBase({ address, placeLat, placeLng }: MapBaseProps) {
+    const [isKakaoReady, setIsKakaoReady] = useState(false);
+    useEffect(() => {
+        if (!window.kakao || !window.kakao.maps) return;
+
+        window.kakao.maps.load(() => {
+            setIsKakaoReady(true);
+        });
+    }, []);
+
     const { fetchApp } = useDeviceSetting();
 
     const mapRef = useRef<kakao.maps.Map | null>(null);
@@ -140,7 +149,7 @@ function MapBase({ address, placeLat, placeLng }: MapBaseProps) {
     // 주소 → 좌표 변환 (지도 이동 없이 URL만 갱신)
     useEffect(() => {
         if (!address) return;
-        if (!window.kakao || !window.kakao.maps) return;
+        if (!isKakaoReady) return;
 
         window.kakao.maps.load(() => {
             if (!window.kakao.maps.services) return;
@@ -164,7 +173,7 @@ function MapBase({ address, placeLat, placeLng }: MapBaseProps) {
                 }
             });
         });
-    }, [address]);
+    }, [address, isKakaoReady]);
 
     // 이전 좌표 기억용 ref
     const lastCenterRef = useRef<{ lat: number; lng: number } | null>(null);
@@ -174,6 +183,7 @@ function MapBase({ address, placeLat, placeLng }: MapBaseProps) {
     // 지도 이동 → 역지오코딩 + URL 업데이트
     const onIdle = () => {
         if (!window.kakao?.maps?.services) return;
+        if (!isKakaoReady) return;
 
         const map = mapRef.current;
         if (!map) return;
