@@ -13,17 +13,8 @@ interface MapBaseProps {
 }
 
 function MapBase({ address, placeLat, placeLng }: MapBaseProps) {
-    const [mapReady, setMapReady] = useState(false);
-    useEffect(() => {
-        if (!window.kakao || !window.kakao.maps) return;
-        window.kakao.maps.load(() => {
-            setMapReady(true);
-        });
-    }, []);
-
     const { fetchApp } = useDeviceSetting();
 
-    // const mapRef = useRef(null);
     const mapRef = useRef<kakao.maps.Map | null>(null);
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -153,6 +144,7 @@ function MapBase({ address, placeLat, placeLng }: MapBaseProps) {
 
         window.kakao.maps.load(() => {
             if (!window.kakao.maps.services) return;
+            // 주소 → 좌표 변환용 객체 생성
             const geocoder = new window.kakao.maps.services.Geocoder();
 
             geocoder.addressSearch(address, (result, status) => {
@@ -168,10 +160,7 @@ function MapBase({ address, placeLat, placeLng }: MapBaseProps) {
                     params.set('lng', String(newLoc.lng));
                     params.set('address', address);
 
-                    router.replace(
-                        `?${params.toString()}`,
-                        // { shallow: true }
-                    );
+                    router.replace(`?${params.toString()}`);
                 }
             });
         });
@@ -179,7 +168,7 @@ function MapBase({ address, placeLat, placeLng }: MapBaseProps) {
 
     // 이전 좌표 기억용 ref
     const lastCenterRef = useRef<{ lat: number; lng: number } | null>(null);
-
+    // 역지오코딩 Geocoder 기억용 ref (처음 만든 Geocoder 재사용)
     const geocoderRef = useRef<kakao.maps.services.Geocoder | null>(null);
 
     // 지도 이동 → 역지오코딩 + URL 업데이트
@@ -189,6 +178,7 @@ function MapBase({ address, placeLat, placeLng }: MapBaseProps) {
         const map = mapRef.current;
         if (!map) return;
 
+        // geocoder가 없으면 최초 1회만 생성
         if (!geocoderRef.current) {
             geocoderRef.current = new window.kakao.maps.services.Geocoder();
         }
@@ -206,9 +196,8 @@ function MapBase({ address, placeLat, placeLng }: MapBaseProps) {
             return;
         }
 
+        // 현재 좌표를 이전 좌표로 저장
         lastCenterRef.current = { lat: nextLat, lng: nextLng };
-
-        // const geocoder = new window.kakao.maps.services.Geocoder();
 
         if (!geocoderRef.current) return;
         geocoderRef.current.coord2Address(nextLng, nextLat, (result, status) => {
@@ -226,7 +215,6 @@ function MapBase({ address, placeLat, placeLng }: MapBaseProps) {
         });
     };
 
-    if (!mapReady) return null;
     return (
         <>
             <div className={style.mapWrapper}>
