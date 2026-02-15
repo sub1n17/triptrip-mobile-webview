@@ -1,6 +1,6 @@
 'use client';
 
-import Footer from '@/src/commons/layout/footer/footer';
+import Footer from '@/commons/layout/footer/footer';
 import Form from '../../commons/form';
 import { InputNormal } from '../../commons/input';
 import { useInitializeSignUp } from './form.initialize';
@@ -8,7 +8,7 @@ import { signupSchema, signUpSchemaType } from './schema';
 import style from './styles.module.css';
 
 export default function SignUp() {
-    const { onClickSubmit, signUpSuccessModal } = useInitializeSignUp();
+    const { onClickSubmit, signUpSuccessModal, open } = useInitializeSignUp();
     return (
         <>
             <div className={style.title_wrapper}>
@@ -62,8 +62,9 @@ export default function SignUp() {
                 </div>
                 <Footer text={'가입하기'}></Footer>
             </Form>
+
             {/* 회원가입 모달창 */}
-            {signUpSuccessModal && <div className={style.innerMask} />}
+            {open && <div className={style.innerMask} />}
             {signUpSuccessModal}
         </>
     );

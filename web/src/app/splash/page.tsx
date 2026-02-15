@@ -1,4 +1,4 @@
-import Splash from '@/src/components/domains/splash';
+import Splash from '@/components/domains/splash';
 
 export default function SplashPage() {
     return <Splash></Splash>;

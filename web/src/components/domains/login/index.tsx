@@ -1,11 +1,11 @@
 'use client';
 
-import Footer from '@/src/commons/layout/footer/footer';
 import { InputNormal } from '../../commons/input';
 import { useInitializeLogIn } from './form.initialize';
 import { loginSchema, LogInSchemaType } from './schema';
 import style from './styles.module.css';
 import Form from '../../commons/form';
+import Footer from '@/commons/layout/footer/footer';
 
 export default function LogIn() {
     const { onClickSubmit } = useInitializeLogIn();

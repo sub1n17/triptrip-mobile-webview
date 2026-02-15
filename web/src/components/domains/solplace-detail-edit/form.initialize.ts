@@ -4,7 +4,7 @@ import { ApolloError, gql, useMutation, useQuery } from '@apollo/client';
 import { editSchemaType } from './schema';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { message } from 'antd';
-import { useSolPlaceEditStore } from '@/src/commons/stores/solplaceEdit-store';
+import { useSolPlaceEditStore } from '@/commons/stores/solplaceEdit-store';
 
 const UPLOAD_FILE = gql`
     mutation uploadFile($file: Upload) {

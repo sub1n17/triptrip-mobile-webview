@@ -1,10 +1,10 @@
-import { useDeviceSetting } from '@/src/commons/settings/device-setting/hook';
 import { useRouter } from 'next/navigation';
 import { LogInSchemaType } from './schema';
 import { gql, useMutation } from '@apollo/client';
 import { useState } from 'react';
 import { message } from 'antd';
-import { useAccessTokenStore } from '@/src/commons/stores/token-store';
+import { useDeviceSetting } from '@/commons/settings/device-setting/hook';
+import { useAccessTokenStore } from '@/commons/stores/token-store';
 
 const LOG_IN = gql`
     mutation login($loginInput: LoginInput!) {
@@ -46,6 +46,10 @@ export const useInitializeLogIn = () => {
                 setAccessToken(accessToken);
                 localStorage.setItem('accessToken', accessToken);
                 // ㄴ> 상세페이지에서 수정/삭제 버튼 작성자만 보이게 하기 위해 로컬스토리지에 저장 (fetchLoggedIn 쿼리 없어서 대체)
+            }
+
+            if (refreshToken) {
+                localStorage.setItem('refreshToken', refreshToken);
             }
 
             // ================= 앱 : 토큰 저장 ==============

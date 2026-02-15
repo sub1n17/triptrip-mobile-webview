@@ -3,7 +3,6 @@
 import Image from 'next/image';
 import style from './styles.module.css';
 import { useEffect, useState } from 'react';
-import { useDeviceSetting } from '@/src/commons/settings/device-setting/hook';
 import { ApolloError, gql, useMutation, useQuery } from '@apollo/client';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
@@ -14,9 +13,6 @@ import { Zoom } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/zoom';
-import { useFullscreenStore } from '@/src/commons/stores/fullscreen-store';
-import { FetchSolplaceLogDocument, FetchSolplaceLogsDocument } from '@/src/commons/graphql/graphql';
-import { useAccessTokenStore } from '@/src/commons/stores/token-store';
 import { jwtDecode } from 'jwt-decode';
 import { Dropdown, Space } from 'antd';
 import { EllipsisOutlined } from '@ant-design/icons';
@@ -24,8 +20,12 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import Script from 'next/script';
-import { useSolPlaceNewStore } from '@/src/commons/stores/solplaceNew-store';
-import { useSolPlaceEditStore } from '@/src/commons/stores/solplaceEdit-store';
+import { useDeviceSetting } from '@/commons/settings/device-setting/hook';
+import { useFullscreenStore } from '@/commons/stores/fullscreen-store';
+import { useSolPlaceEditStore } from '@/commons/stores/solplaceEdit-store';
+import { useSolPlaceNewStore } from '@/commons/stores/solplaceNew-store';
+import { useAccessTokenStore } from '@/commons/stores/token-store';
+import { FetchSolplaceLogDocument, FetchSolplaceLogsDocument } from '@/commons/graphql/graphql';
 
 interface ITokenPayload {
     id: string; // = userId
@@ -275,7 +275,7 @@ export default function SolPlaceDetail() {
                                                 <Space>
                                                     {/* 더보기 */}
                                                     <EllipsisOutlined
-                                                        style={{ fontSize: '20px' }}
+                                                        style={{ fontSize: '20px', color: '#000' }}
                                                     ></EllipsisOutlined>
                                                 </Space>
                                             </a>

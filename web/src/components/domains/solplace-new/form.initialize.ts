@@ -1,11 +1,11 @@
 'use client';
 
-import { useDeviceSetting } from '@/src/commons/settings/device-setting/hook';
 import { newSchemaType } from './schema';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ApolloError, gql, useMutation } from '@apollo/client';
-import { useSolPlaceNewStore } from '@/src/commons/stores/solplaceNew-store';
 import { message } from 'antd';
+import { useDeviceSetting } from '@/commons/settings/device-setting/hook';
+import { useSolPlaceNewStore } from '@/commons/stores/solplaceNew-store';
 
 const UPLOAD_FILE = gql`
     mutation uploadFile($file: Upload) {

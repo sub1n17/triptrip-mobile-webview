@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Map } from 'react-kakao-maps-sdk';
 import style from './styles.module.css';
-import { useDeviceSetting } from '@/src/commons/settings/device-setting/hook';
+import { useDeviceSetting } from '@/commons/settings/device-setting/hook';
 
 interface MapBaseProps {
     address?: string;

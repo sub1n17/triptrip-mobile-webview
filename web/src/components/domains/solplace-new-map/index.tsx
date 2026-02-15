@@ -2,14 +2,13 @@
 
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-
 import { ButtonFull } from '../../commons/button';
 import { InputRound } from '../../commons/input';
 import style from './styles.module.css';
 import dynamic from 'next/dynamic';
 import CircularProgress from '@mui/material/CircularProgress';
 
-const MapNew = dynamic(() => import('../../commons/map').then((mod) => mod.MapNew), {
+const MapNew = dynamic(() => import('@/components/commons/map').then((mod) => mod.MapNew), {
     ssr: false,
     loading: () => (
         <div className={style.kakaoLoad}>

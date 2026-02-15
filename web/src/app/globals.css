@@ -22,6 +22,7 @@
 html {
     font-size: 16px;
     /* 기준을 16px로 강제 고정 */
+    color-scheme: light;
 }
 
 body {

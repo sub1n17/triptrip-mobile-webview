@@ -1,4 +1,4 @@
-import SolPlaceNew from '@/src/components/domains/solplace-new';
+import SolPlaceNew from '@/components/domains/solplace-new';
 
 export default function solPlaceNewPage() {
     return (

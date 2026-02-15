@@ -24,7 +24,7 @@ export default function Textarea({
             <textarea
                 placeholder={placeholder}
                 {...register(keyname)}
-                className={className}
+                className={`${style.textarea} ${className ?? ''}`}
                 value={value}
                 onChange={onChange}
             ></textarea>

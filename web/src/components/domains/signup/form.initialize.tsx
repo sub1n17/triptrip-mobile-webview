@@ -76,5 +76,5 @@ export const useInitializeSignUp = () => {
             </Button>
         </Modal>
     );
-    return { onClickSubmit, signUpSuccessModal };
+    return { onClickSubmit, signUpSuccessModal, open };
 };

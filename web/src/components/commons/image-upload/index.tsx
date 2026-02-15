@@ -3,12 +3,12 @@
 import { ChangeEvent, useRef } from 'react';
 import Image from 'next/image';
 import style from './styles.module.css';
-import { useSolPlaceNewStore } from '@/src/commons/stores/solplaceNew-store';
 import { message } from 'antd';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/free-mode';
-import { useSolPlaceEditStore } from '@/src/commons/stores/solplaceEdit-store';
+import { useSolPlaceNewStore } from '@/commons/stores/solplaceNew-store';
+import { useSolPlaceEditStore } from '@/commons/stores/solplaceEdit-store';
 
 const imgSrc = {
     add_img: '/images/add_img.png',

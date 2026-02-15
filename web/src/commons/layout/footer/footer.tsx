@@ -1,7 +1,7 @@
-import { ButtonFull } from '@/src/components/commons/button';
+import { ButtonFull } from '@/components/commons/button';
 import style from './styles.module.css';
-import Navigation from '@/src/components/commons/navigation';
 import Link from 'next/link';
+import Navigation from '@/components/commons/navigation';
 
 interface IFooterProps {
     text?: string;

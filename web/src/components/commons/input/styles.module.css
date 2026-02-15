@@ -22,3 +22,7 @@
     box-shadow: 0px 0px 0.5rem rgba(0, 0, 0, 0.16);
     outline: none;
 }
+
+.input {
+    color: #000;
+}

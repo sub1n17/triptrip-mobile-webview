@@ -1,4 +1,4 @@
-import MyPage from '@/src/components/domains/mypage';
+import MyPage from '@/components/domains/mypage';
 
 export default function Mypage() {
     return <MyPage></MyPage>;

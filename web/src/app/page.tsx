@@ -22,6 +22,12 @@ export default function Home() {
             // Splash 최소 3초 유지
             await new Promise((res) => setTimeout(res, 3000));
 
+            const storeToken = localStorage.getItem('accessToken');
+            if (!storeToken) {
+                router.replace('/login');
+                return;
+            }
+
             const isValid = await checkToken();
             if (!isValid) {
                 router.replace('/login'); // 토큰 유효 X → 로그인페이지로 이동

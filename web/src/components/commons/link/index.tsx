@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import style from './styles.module.css';
-import { useRoutingSetting } from '@/src/commons/settings/routing-setting/hook';
+import { useRoutingSetting } from '@/commons/settings/routing-setting/hook';
 
 const imgSrc = {
     arr_right: '/icons/right_icon.png',

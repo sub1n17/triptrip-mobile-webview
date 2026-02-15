@@ -1,16 +1,16 @@
 'use client';
 
 import style from './styles.module.css';
-import { useDeviceSetting } from '@/src/commons/settings/device-setting/hook';
 import { Toggle } from '../../commons/toggle';
 import { useEffect, useState } from 'react';
-import Footer from '@/src/commons/layout/footer/footer';
 import { message } from 'antd';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import LoginOutlinedIcon from '@mui/icons-material/LoginOutlined';
-import { useAccessTokenStore } from '@/src/commons/stores/token-store';
 import { useRouter } from 'next/navigation';
-import UseAuth from '@/src/commons/auth/useAuth';
+import { useDeviceSetting } from '@/commons/settings/device-setting/hook';
+import UseAuth from '@/commons/auth/useAuth';
+import { useAccessTokenStore } from '@/commons/stores/token-store';
+import Footer from '@/commons/layout/footer/footer';
 
 interface DeviceResponse<T> {
     data: T;

@@ -1,4 +1,4 @@
-import SolPlaceDetailEdit from '@/src/components/domains/solplace-detail-edit';
+import SolPlaceDetailEdit from '@/components/domains/solplace-detail-edit';
 
 export default function solPlaceDetailEditPage() {
     return (

@@ -21,7 +21,8 @@ export default function Index() {
                 domStorageEnabled
                 geolocationEnabled
                 originWhitelist={['*']}
-                source={{ uri: 'https://triptrip-mobile-webview.vercel.app/' }}
+                // source={{ uri: 'https://triptrip-mobile-webview.vercel.app/' }}
+                source={{ uri: 'http://192.168.55.42:3000' }}
                 ref={webviewRef}
                 onMessage={(event) => {
                     if (!event.nativeEvent.data) return;

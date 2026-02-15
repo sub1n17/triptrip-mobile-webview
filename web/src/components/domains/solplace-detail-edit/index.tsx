@@ -1,10 +1,8 @@
 'use client';
 
 import style from '../solplace-new/styles.module.css';
-import { InputNormal } from '@/src/components/commons/input';
 import Form from '../../commons/form';
 import Textarea from '../../commons/textarea';
-import Footer from '@/src/commons/layout/footer/footer';
 import ImageUpload from '../../commons/image-upload';
 import { AddressLink } from '../../commons/link';
 import { editSchema } from './schema';
@@ -12,7 +10,9 @@ import { useInitializeEdit } from './form.initialize';
 import { gql, useQuery } from '@apollo/client';
 import { useParams, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
-import { useSolPlaceEditStore } from '@/src/commons/stores/solplaceEdit-store';
+import { useSolPlaceEditStore } from '@/commons/stores/solplaceEdit-store';
+import { InputNormal } from '@/components/commons/input';
+import Footer from '@/commons/layout/footer/footer';
 
 const FETCH_PLACE = gql`
     query fetchSolplaceLog($id: ID!) {

@@ -38,10 +38,11 @@ function InputBase({
                 type={!type ? 'text' : 'password'}
                 placeholder={placeholder}
                 {...(formContext && keyname ? register(keyname) : {})}
-                className={className}
+                className={`${style.input} ${className ?? ''}`}
                 value={value}
                 onChange={onChange}
                 readOnly={!formContext || !keyname ? readOnly : false}
+                style={{ color: '#000' }}
             />
 
             {error && <div className={style.error_txt}>{error}</div>}

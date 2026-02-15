@@ -1,15 +1,15 @@
 'use client';
 import Image from 'next/image';
 import style from './styles.module.css';
-import Footer from '@/src/commons/layout/footer/footer';
 import Link from 'next/link';
-import { useRoutingSetting } from '@/src/commons/settings/routing-setting/hook';
 import { useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { ButtonCircle } from '../../commons/button';
 import { gql, useQuery } from '@apollo/client';
-import { useSolPlaceNewStore } from '@/src/commons/stores/solplaceNew-store';
-import { FetchSolplaceLogsDocument } from '@/src/commons/graphql/graphql';
+import { useRoutingSetting } from '@/commons/settings/routing-setting/hook';
+import { FetchSolplaceLogsDocument } from '@/commons/graphql/graphql';
+import { useSolPlaceNewStore } from '@/commons/stores/solplaceNew-store';
+import Footer from '@/commons/layout/footer/footer';
 
 const imgSrc = {
     location: '/icons/location.png',

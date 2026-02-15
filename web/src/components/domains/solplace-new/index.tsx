@@ -1,18 +1,18 @@
 'use client';
 
 import style from './styles.module.css';
-import { InputNormal } from '@/src/components/commons/input';
 
 import Form from '../../commons/form';
 import { newSchema, newSchemaType } from './schema';
 import { useInitializeNew } from './form.initialize';
 import Textarea from '../../commons/textarea';
-import Footer from '@/src/commons/layout/footer/footer';
 import ImageUpload from '../../commons/image-upload';
 import { AddressLink } from '../../commons/link';
 import { useSearchParams } from 'next/navigation';
-import { useSolPlaceNewStore } from '@/src/commons/stores/solplaceNew-store';
 import { useEffect } from 'react';
+import { useSolPlaceNewStore } from '@/commons/stores/solplaceNew-store';
+import { InputNormal } from '@/components/commons/input';
+import Footer from '@/commons/layout/footer/footer';
 
 export default function SolPlaceNew() {
     const searchParams = useSearchParams();
